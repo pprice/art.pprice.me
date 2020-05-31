@@ -48,3 +48,5 @@ export const Sizes = {
   Bristol9x12: () => createPageSize(9.0157, 12.0078),
   Bristol11x17: () => createPageSize(11, 17),
 };
+
+export type PaperSizes = keyof typeof Sizes;

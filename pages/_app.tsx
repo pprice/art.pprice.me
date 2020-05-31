@@ -10,7 +10,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import classes from "*.module.css";
-import theme from "../src/theme";
+import theme from "@/components/Theme";
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;

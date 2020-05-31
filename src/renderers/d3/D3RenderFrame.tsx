@@ -1,49 +1,34 @@
-import {
-  FunctionComponent,
-  useMemo,
-  useRef,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  ForwardRefExoticComponent,
-} from "react";
+import { useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import * as d3 from "d3";
 
-import { Sizes, PaperSize, CanvasSize, createCanvasSize, inchesToPixels } from "./sizes";
-import { RenderContext, Selection } from "./context";
-import { serializeSvg } from "./serializer";
+import { Sizes, CanvasSize, createCanvasSize, inchesToPixels } from "@/const/sizes";
+import { svgSerializer } from "@/utils";
+import { BaseRenderFrameProps, RenderRef } from "../props";
+import { D3RenderContext, Selection } from "./D3RenderContext";
 
-export type { RenderContext, Selection };
+export type { D3RenderContext, Selection };
 
-type D3RenderProps<TDatum = any> = {
-  size: keyof typeof Sizes;
-  orientation: keyof PaperSize;
-  containerStroke?: string;
-  containerStrokeWidth?: number;
-  margin?: number | number[]; // LTRB
-  context?: any;
-  seed: string;
-  attribution?: string;
-  onRender: (selection: Selection<TDatum>, context: RenderContext) => void;
+export type D3RenderFrameProps<TDatum> = BaseRenderFrameProps & {
+  type: "d3";
+  onRender: (selection: Selection<TDatum>, context: D3RenderContext<any>) => void;
 };
 
-export type D3RenderRef = {
-  svg: HTMLElement;
-  serialize: () => Blob;
-};
-
-export const D3Render = forwardRef<D3RenderRef, D3RenderProps>(
-  ({ margin, seed, size, orientation, onRender, attribution, ...props }, ref) => {
-    const svgSize = useMemo(() => Sizes[size]()[orientation], [size, orientation]);
+export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(
+  ({ margin, seed, size, orientation, onRender, attribution, config, ...props }, ref) => {
+    const svgSize = useMemo(() => {
+      const factory = Sizes[size];
+      if (!factory) {
+        console.warn(`Unknown size ${size}`);
+        return undefined;
+      }
+      return factory()[orientation];
+    }, [size, orientation]);
     const svgRef = useRef();
 
     // Forward ref implementation
     useImperativeHandle(ref, () => ({
-      get svg() {
-        return svgRef.current;
-      },
       serialize() {
-        return serializeSvg(svgRef.current, svgSize);
+        return svgSerializer(svgRef.current, svgSize);
       },
     }));
 
@@ -62,6 +47,10 @@ export const D3Render = forwardRef<D3RenderRef, D3RenderProps>(
     useEffect(() => {
       const root = d3.select(svgRef.current);
 
+      if (!svgSize) {
+        return;
+      }
+
       // Calculate drawing area
       let drawingDimensions = [...svgSize.inches];
 
@@ -73,7 +62,7 @@ export const D3Render = forwardRef<D3RenderRef, D3RenderProps>(
       const drawingCanvas: CanvasSize = createCanvasSize(drawingDimensions[0], drawingDimensions[1]);
 
       // TODO: Move to memo
-      const context = new RenderContext(svgSize, drawingCanvas, seed);
+      const context = new D3RenderContext(svgSize, drawingCanvas, seed, config);
       const drawElement = context.recreateLayer(root, "draw");
 
       // Overlay (bounding argins, etc)
@@ -113,7 +102,11 @@ export const D3Render = forwardRef<D3RenderRef, D3RenderProps>(
           .attr("font-size", "10px")
           .attr("font-family", "sans-serif");
       }
-    }, [svgRef.current, onRender, seed, margins, attribution]);
+    }, [svgRef.current, onRender, seed, margins, attribution, svgSize, config]);
+
+    if (!svgSize) {
+      return null;
+    }
 
     return (
       <div style={{ background: "#EEE", padding: 20 }}>
@@ -131,7 +124,7 @@ export const D3Render = forwardRef<D3RenderRef, D3RenderProps>(
   }
 );
 
-D3Render.defaultProps = {
+D3RenderFrame.defaultProps = {
   containerStroke: "black",
   containerStrokeWidth: 1,
 };

@@ -1,68 +1,18 @@
-import { CanvasSize } from "./sizes";
-import sr from "seedrandom";
-
-type Rounding = undefined | "floor" | "ceil" | "round";
-type Point = [number, number];
-export type Selection<TDatum = any> = d3.Selection<d3.BaseType, unknown, HTMLElement, TDatum>;
-
-export class RandomDrawContext {
-  private random: sr.prng;
-  constructor(seed: string, private size: CanvasSize) {
-    this.random = sr(seed);
-  }
-
-  next(rounding?: Rounding): number {
-    return this.round(this.random(), rounding);
-  }
-
-  between(min: number, max: number, rounding?: Rounding): number {
-    return this.round(min + this.next() * (max - min), rounding);
-  }
-
-  upto(max: number, rounding?: Rounding) {
-    return this.between(0, max, rounding);
-  }
-
-  pointBetween(min: Point, max: Point, rounding?: Rounding): Point {
-    const x = this.between(min[0], max[0], rounding);
-    const y = this.between(min[1], max[1], rounding);
-
-    return [x, y];
-  }
-
-  pointUpto(maxWidth: number, maxHeight: number, rounding?: Rounding): Point {
-    const x = this.upto(maxWidth, rounding);
-    const y = this.upto(maxHeight, rounding);
-
-    return [x, y];
-  }
-
-  private round(number: number, rounding: Rounding): number {
-    if (!number || !rounding) {
-      return number;
-    } else if (rounding === "floor") {
-      return Math.floor(number);
-    } else if (rounding === "ceil") {
-      return Math.ceil(number);
-    }
-
-    return Math.round(number);
-  }
-}
+import { RandomContext } from "./RandomContext";
+import { CanvasSize } from "@/const";
 
 type SegmentStyle = "start" | "end" | "center";
-type RangeType = "inclusive" | "exclusive";
 
-export class RenderContext {
-  public readonly random: RandomDrawContext;
-  private layerId: number = 0;
+export class RenderContext<TConfig> {
+  public readonly random: RandomContext;
 
   constructor(
     public readonly pageCanvas: CanvasSize,
     public readonly canvas: CanvasSize,
-    public readonly seed: string
+    public readonly seed: string,
+    public readonly config: TConfig
   ) {
-    this.random = new RandomDrawContext(seed, canvas);
+    this.random = new RandomContext(seed, canvas);
   }
 
   public range(start: number, end: number, by: number = 1): number[] {
@@ -84,23 +34,20 @@ export class RenderContext {
     return this.canvas.pixels[1];
   }
 
+  clampVertical(y: number, padding: number = 0): number {
+    return Math.max(padding, Math.min(y, this.height - padding));
+  }
+
+  clampHorizontal(x: number, padding: number = 0): number {
+    return Math.max(padding, Math.min(x, this.width - padding));
+  }
+
+  clamp([x, y]: [number, number], padding: number = 0) {
+    return [this.clampHorizontal(x, padding), this.clampVertical(y, padding)];
+  }
+
   inchesToPixels(inches: number) {
     return inches * 96;
-  }
-
-  appendLayer(target: Selection, name: string, id: string = name): Selection {
-    const idx = this.layerId++;
-
-    return target
-      .append("g")
-      .attr("id", id)
-      .attr("inkscape-groupmode", "layer")
-      .attr("inkscape-label", `${idx}-${name}`);
-  }
-
-  recreateLayer(target: Selection, name: string, id: string = name): Selection {
-    target.select(`#${id}`).remove();
-    return this.appendLayer(target, name, id);
   }
 
   segment(horizontal: number, vertical: number, style: SegmentStyle = "center"): number[][] {
