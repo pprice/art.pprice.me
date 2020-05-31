@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useRef, useState, useMemo } from "react";
 import FileSaver from "file-saver";
 import { Divider, Box, Button, TextField, IconButton, Select, MenuItem, Popover } from "@material-ui/core";
+import { useDebounce } from "use-debounce";
+
 import ArrowDownload from "@material-ui/icons/ArrowDownward";
 import Refresh from "@material-ui/icons/Refresh";
 import AspectRatioIcon from "@material-ui/icons/AspectRatio";
@@ -9,11 +11,10 @@ import CakeIcon from "@material-ui/icons/Cake";
 import SettingsIcon from "@material-ui/icons/Settings";
 
 import { RenderFrameProps, RenderRef } from "./props";
-import { RenderFrame } from "./RenderFrame";
-import { useDebounce } from "../hooks";
 import { PaperSizes } from "../const/sizes";
-import { RenderConfiguration, getDefaultConfiguration } from "../config/Config";
-import { ConfigEditor } from "../config/ConfigEditor";
+
+import { RenderFrame } from "./RenderFrame";
+import { RenderConfiguration, getDefaultConfiguration, ConfigEditor } from "../config";
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -40,7 +41,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const [orientation, setOrientation] = useState(initialOrientation || "landscape");
   const [size, setSize] = useState<PaperSizes>(initialSize || "Bristol9x12");
 
-  const debouncedSeed = useDebounce(seed, 250);
+  const [debouncedSeed] = useDebounce(seed, 250);
 
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
 
@@ -103,8 +104,12 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             open={settingsOpen}
             onClose={() => setSettingsOpen(false)}
           >
-            <Box minWidth={500} overflow="hidden">
-              <ConfigEditor config={config} initial={initialConfig} onConfigUpdated={() => {}} />
+            <Box maxWidth={500} overflow="hidden" p={1}>
+              <ConfigEditor
+                config={config}
+                initial={initialConfig}
+                onConfigUpdated={(updated) => setActiveConfig(updated)}
+              />
             </Box>
           </Popover>
         </Box>

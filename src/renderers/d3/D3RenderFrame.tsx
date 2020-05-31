@@ -4,13 +4,11 @@ import * as d3 from "d3";
 import { Sizes, CanvasSize, createCanvasSize, inchesToPixels } from "@/const/sizes";
 import { svgSerializer } from "@/utils";
 import { BaseRenderFrameProps, RenderRef } from "../props";
-import { D3RenderContext, Selection } from "./D3RenderContext";
-
-export type { D3RenderContext, Selection };
+import { D3RenderContext, D3Selection } from "./D3RenderContext";
 
 export type D3RenderFrameProps<TDatum> = BaseRenderFrameProps & {
   type: "d3";
-  onRender: (selection: Selection<TDatum>, context: D3RenderContext<any>) => void;
+  onRender: (selection: D3Selection<TDatum>, context: D3RenderContext<any>) => void;
 };
 
 export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(

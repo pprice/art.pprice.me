@@ -1,10 +1,10 @@
-import React from "react";
 import * as d3 from "d3";
-import { MicronPigma } from "@/const";
-import { D3RenderContext, Selection, RenderContainer } from "@/renderers";
-import { RuntimeRenderConfiguration, makeRenderConfig } from "@/config";
 
-const Config = makeRenderConfig({
+import { D3Artwork } from "../types/d3";
+import { makeRenderConfig } from "@/config";
+import { MicronPigma } from "@/const";
+
+const config = makeRenderConfig({
   num_lines: {
     displayName: "Number of lines",
     type: "number",
@@ -12,10 +12,26 @@ const Config = makeRenderConfig({
     min: 50,
     max: 100,
   },
+  num_lines2: {
+    displayName: "Number of lines",
+    type: "number",
+    default: 60,
+    min: 50,
+    max: 100,
+  },
+  num_lines3: {
+    displayName: "Number of lines 3",
+    type: "number",
+    default: 60,
+    min: 50,
+    max: 100,
+  },
 });
 
-function Lines() {
-  const render = (selection: Selection, ctx: D3RenderContext<RuntimeRenderConfiguration<typeof Config>>) => {
+const Lines: D3Artwork<typeof config> = {
+  type: "d3",
+  config,
+  render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
     var lineFunction = d3.line<number[]>().curve(d3.curveBundle);
     const vSegment = ctx.segmentDimension(ctx.config.num_lines, "vertical");
@@ -37,9 +53,7 @@ function Lines() {
         .attr("stroke-width", "0.5px")
         .attr("fill", "none");
     }
-  };
-
-  return <RenderContainer type="d3" config={Config} onRender={render} margin={1} attribution="Sea / [SEED] / [DATE]" />;
-}
+  },
+};
 
 export default Lines;

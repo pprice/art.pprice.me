@@ -1,6 +1,7 @@
 import { RenderContext } from "../context/RenderContext";
 import { CanvasSize } from "@/const";
-export type Selection<TDatum = any> = d3.Selection<d3.BaseType, unknown, HTMLElement, TDatum>;
+
+export type D3Selection<TDatum = any> = d3.Selection<d3.BaseType, unknown, HTMLElement, TDatum>;
 
 export class D3RenderContext<TConfig> extends RenderContext<TConfig> {
   private layerId: number = 0;
@@ -9,7 +10,7 @@ export class D3RenderContext<TConfig> extends RenderContext<TConfig> {
     super(pageCanvas, canvas, seed, config);
   }
 
-  appendLayer(target: Selection, name: string, id: string = name): Selection {
+  appendLayer(target: D3Selection, name: string, id: string = name): D3Selection {
     const idx = this.layerId++;
 
     return target
@@ -19,7 +20,7 @@ export class D3RenderContext<TConfig> extends RenderContext<TConfig> {
       .attr("inkscape-label", `${idx}-${name}`);
   }
 
-  recreateLayer(target: Selection, name: string, id: string = name): Selection {
+  recreateLayer(target: D3Selection, name: string, id: string = name): D3Selection {
     target.select(`#${id}`).remove();
     return this.appendLayer(target, name, id);
   }

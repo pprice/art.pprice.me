@@ -3,27 +3,27 @@ type BaseProp<T> = {
   default?: T;
 };
 
-type NumericProperty = BaseProp<number> & {
+export type NumericProperty = BaseProp<number> & {
   type: "number";
   min?: number;
   max?: number;
 };
 
-type NumericRangeProperty = BaseProp<[number, number]> & {
+export type NumericRangeProperty = BaseProp<[number, number]> & {
   type: "number-range";
   min: number;
   max: number;
 };
 
-type BooleanProperty = BaseProp<boolean> & {
+export type BooleanProperty = BaseProp<boolean> & {
   type: "boolean";
 };
 
-type StringProperty = BaseProp<string> & {
+export type StringProperty = BaseProp<string> & {
   type: "string";
 };
 
-type RenderConfigurationProperty = NumericProperty | NumericRangeProperty | BooleanProperty | StringProperty;
+export type RenderConfigurationProperty = NumericProperty | NumericRangeProperty | BooleanProperty | StringProperty;
 
 export type RenderConfiguration = {
   [key: string]: RenderConfigurationProperty;
@@ -97,9 +97,12 @@ function defaultForPropType(prop: RenderConfigurationProperty): any {
     case "boolean":
       return prop.default || false;
     case "number":
-      return prop.default || (prop.min != undefined && prop.max != undefined)
-        ? (prop.max - prop.min) / 2
-        : prop.min || prop.max || 0;
+      return (
+        prop.default ||
+        (prop.min != undefined && prop.max != undefined
+          ? prop.min + (prop.max - prop.min) / 2
+          : prop.min || prop.max || 0)
+      );
     case "number-range":
       return prop.default || [prop.min, prop.max];
     case "string":
