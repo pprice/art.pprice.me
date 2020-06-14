@@ -47,6 +47,7 @@ const Pens = [MicronPigma.red, MicronPigma.blue, MicronPigma.green, MicronPigma.
 
 const Torus: D3Artwork<typeof config> = {
   type: "d3",
+  path: "math/arc-torus",
   config,
   render: async (selection, ctx) => {
     const groups = ctx.range(1, ctx.config.groups).map((i) => {

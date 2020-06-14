@@ -39,6 +39,7 @@ const Pens = [MicronPigma.red, MicronPigma.blue, MicronPigma.green, MicronPigma.
 
 const Torus: D3Artwork<typeof config> = {
   type: "d3",
+  path: "math/ellipse-torus",
   config,
   render: (selection, ctx) => {
     const center = ctx.center;

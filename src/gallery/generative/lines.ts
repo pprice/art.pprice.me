@@ -23,6 +23,7 @@ const config = makeRenderConfig({
 
 const Lines: D3Artwork<typeof config> = {
   type: "d3",
+  path: "generative/lines",
   config,
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);

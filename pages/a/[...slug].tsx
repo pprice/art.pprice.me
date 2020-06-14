@@ -6,6 +6,13 @@ import { getArtworkRenderer } from "@/gallery";
 import { RenderContainer } from "@/renderers";
 import Head from "next/head";
 
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   return {
+//     paths: getGalleryIndex().map((p) => ({ params: { slug: p.split("/") } })),
+//     fallback: true,
+//   };
+// };
+
 const ArtworkPage: FunctionComponent = () => {
   const router = useRouter();
   const { slug } = router.query;

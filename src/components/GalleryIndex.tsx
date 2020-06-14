@@ -1,16 +1,6 @@
 import { FunctionComponent, useMemo } from "react";
-import { buildGalleryIndex } from "@/gallery";
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  ListItemIcon,
-  makeStyles,
-  createStyles,
-  Theme,
-} from "@material-ui/core";
+import { getGalleryIndex } from "@/gallery";
+import { List, ListItem, ListItemText, Box, makeStyles, createStyles, Theme } from "@material-ui/core";
 import Link from "next/link";
 
 type Item = { name: string; url: string };
@@ -51,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const GalleryIndex: FunctionComponent = () => {
-  const index = useMemo(() => listToGroups(buildGalleryIndex()), []);
+  const index = useMemo(() => listToGroups(getGalleryIndex()), []);
   const classes = useStyles();
 
   return (

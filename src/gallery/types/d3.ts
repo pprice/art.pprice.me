@@ -14,6 +14,7 @@ type InitialProps = {
 type BaseArtwork<TConfig extends RenderConfiguration> = {
   initialProps?: Partial<InitialProps>;
   config: TConfig;
+  path?: string;
   attribution?: string;
 };
 
