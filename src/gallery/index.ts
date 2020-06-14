@@ -5,6 +5,7 @@ import { RenderConfiguration } from "@/config";
 // providers
 import * as generative from "./generative";
 import * as math from "./math";
+import { unstable_batchedUpdates } from "react-dom";
 
 type ArtworkExport<TConfig extends RenderConfiguration> = {
   default?: Artwork<TConfig>;
@@ -23,6 +24,10 @@ export function getArtworkRenderer<TConfig extends RenderConfiguration>(path: st
 }
 
 function loadLocalArtwork<TConfig extends RenderConfiguration>(path: string[]): Artwork<TConfig> | undefined {
+  if (process.env.NODE_ENV === "production") {
+    return undefined;
+  }
+
   const normalized = ["."].concat(path.filter((i) => i !== "." && i !== "..")).join("/");
 
   try {
@@ -31,7 +36,7 @@ function loadLocalArtwork<TConfig extends RenderConfiguration>(path: string[]): 
   } catch (e) {
     if (e instanceof Error) {
       if (new RegExp(normalized).test(e.message)) {
-        return null;
+        return undefined;
       }
     }
     throw e;
