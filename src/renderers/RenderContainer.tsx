@@ -1,24 +1,24 @@
 import React, { FunctionComponent, useRef, useState, useMemo } from "react";
 import FileSaver from "file-saver";
-import { Divider, Box, Button, TextField, IconButton, Select, MenuItem, Popover } from "@material-ui/core";
-import { useDebounce } from "use-debounce";
+import { Box, Button, TextField, IconButton, Select, MenuItem, Switch, Zoom, Tooltip } from "@material-ui/core";
 
-import ArrowDownload from "@material-ui/icons/ArrowDownward";
-import Refresh from "@material-ui/icons/Refresh";
+import ArrowDownloadIcon from "@material-ui/icons/ArrowDownward";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import AspectRatioIcon from "@material-ui/icons/AspectRatio";
 import RotateRightIcon from "@material-ui/icons/RotateRight";
 import CakeIcon from "@material-ui/icons/Cake";
 import SettingsIcon from "@material-ui/icons/Settings";
+import ColorizeIcon from "@material-ui/icons/Colorize";
 
 import { RenderFrameProps, RenderRef } from "./props";
-import { PaperSizes } from "../const/sizes";
+import { PaperSizes, BLEND_MODES, BlendMode } from "../const";
 
 import { RenderFrame } from "./RenderFrame";
 import { RenderConfiguration, getDefaultConfiguration, ConfigEditor } from "../config";
+import { useDebounce } from "../hooks/UseDebounce";
+import { PartialBy } from "@/utils";
 
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-type PartialRenderFrameProps = "seed" | "orientation" | "size";
+type PartialRenderFrameProps = "seed" | "orientation" | "size" | "blendMode" | "margin";
 
 type RenderContainerProps = PartialBy<Omit<RenderFrameProps, "ref">, PartialRenderFrameProps> & {
   defaultFileName?: string;
@@ -29,28 +29,44 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   defaultFileName,
   seed: initialSeed,
   orientation: initialOrientation,
+  blendMode: initialBlendMode,
   size: initialSize,
   config,
   ...props
 }) => {
   const renderRef = useRef<RenderRef>();
-  const settingsAnchorRef = useRef();
 
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [configPanelOpen, setConfigPanelOpen] = useState(false);
   const [seed, setSeed] = useState(initialSeed || "");
   const [orientation, setOrientation] = useState(initialOrientation || "landscape");
+  const [blendMode, setBlendMode] = useState<BlendMode>(initialBlendMode || "multiply");
+
   const [size, setSize] = useState<PaperSizes>(initialSize || "Bristol9x12");
 
-  const [debouncedSeed] = useDebounce(seed, 250);
+  const debouncedSeed = useDebounce(seed, 250);
 
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
-
   const [activeConfig, setActiveConfig] = useState<any>(initialConfig);
+
+  const configPanelVisible = useMemo(() => activeConfig != undefined && configPanelOpen, [
+    activeConfig,
+    configPanelOpen,
+  ]);
+
+  const generateSeed = () => {
+    setSeed(
+      Math.floor(Math.random() * 100000000000)
+        .toString(16)
+        .toUpperCase()
+    );
+  };
 
   return (
     <div style={{ width: "100%" }}>
       <Box display="flex" marginBottom={2} flexDirection="row" alignItems="center">
-        <CakeIcon />
+        <Tooltip title="Seed">
+          <CakeIcon />
+        </Tooltip>
         <Box marginLeft={1} marginRight={2}>
           <TextField
             size="small"
@@ -60,18 +76,16 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             onChange={(e) => setSeed(e.target.value)}
             InputProps={{
               endAdornment: (
-                <IconButton
-                  size="small"
-                  edge="end"
-                  onClick={() => setSeed(Math.floor(Math.random() * 100000000).toString())}
-                >
-                  <Refresh />
+                <IconButton size="small" edge="end" onClick={generateSeed}>
+                  <RefreshIcon />
                 </IconButton>
               ),
             }}
           />
         </Box>
-        <AspectRatioIcon />
+        <Tooltip title="Dimensions">
+          <AspectRatioIcon />
+        </Tooltip>
         <Box marginLeft={1} marginRight={2}>
           <Select value={size} onChange={(e) => setSize(e.target.value as PaperSizes)}>
             <MenuItem value="Bristol9x12">Bristol: 9x12</MenuItem>
@@ -80,43 +94,39 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             <MenuItem value="A3">A3</MenuItem>
           </Select>
         </Box>
-        <RotateRightIcon />
+        <Tooltip title="Orientation">
+          <RotateRightIcon />
+        </Tooltip>
         <Box marginLeft={1} marginRight={2}>
           <Select value={orientation} onChange={(e) => setOrientation(e.target.value as "landscape" | "portrait")}>
             <MenuItem value="landscape">Landscape</MenuItem>
             <MenuItem value="portrait">Portrait</MenuItem>
           </Select>
         </Box>
-        <Box flexGrow={1}></Box>
-        <Box>
-          <IconButton
-            color={settingsOpen ? "primary" : "default"}
-            size="small"
-            ref={settingsAnchorRef}
-            onClick={() => setSettingsOpen(!settingsOpen)}
-          >
-            <SettingsIcon />
-          </IconButton>
-          <Popover
-            anchorEl={settingsAnchorRef.current}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
-            open={settingsOpen}
-            onClose={() => setSettingsOpen(false)}
-          >
-            <Box maxWidth={500} overflow="hidden" p={1}>
-              <ConfigEditor
-                config={config}
-                initial={initialConfig}
-                onConfigUpdated={(updated) => setActiveConfig(updated)}
-              />
-            </Box>
-          </Popover>
+        <Tooltip title="Blend Mode">
+          <ColorizeIcon />
+        </Tooltip>
+
+        <Box marginLeft={1} marginRight={2}>
+          <Select value={blendMode} onChange={(e) => setBlendMode(e.target.value as BlendMode)}>
+            {BLEND_MODES.map((mode) => (
+              <MenuItem key={mode} value={mode}>
+                {mode}
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
+        <Box flexGrow={1}></Box>
+        {activeConfig && (
+          <>
+            <SettingsIcon />
+            <Switch size="small" value={configPanelOpen} onChange={(e, checked) => setConfigPanelOpen(checked)} />
+          </>
+        )}
         <Box marginLeft={2}>
           <Button
             size="medium"
-            startIcon={<ArrowDownload />}
+            startIcon={<ArrowDownloadIcon />}
             variant="contained"
             color="primary"
             onClick={() => {
@@ -128,17 +138,35 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
           </Button>
         </Box>
       </Box>
-      <Box marginBottom={2}>
-        <Divider />
+      <Box display="flex" flexDirection="row">
+        <Box flexGrow={1}>
+          <RenderFrame
+            {...props}
+            size={size}
+            orientation={orientation}
+            ref={renderRef}
+            seed={debouncedSeed}
+            blendMode={blendMode}
+            config={activeConfig}
+          />
+        </Box>
+
+        <Box>
+          <Zoom in={configPanelOpen}>
+            <Box>
+              {configPanelVisible && (
+                <Box width={350}>
+                  <ConfigEditor
+                    config={config}
+                    activeConfig={activeConfig}
+                    onConfigUpdated={(updated) => setActiveConfig(updated)}
+                  />
+                </Box>
+              )}
+            </Box>
+          </Zoom>
+        </Box>
       </Box>
-      <RenderFrame
-        {...props}
-        size={size}
-        orientation={orientation}
-        ref={renderRef}
-        seed={debouncedSeed}
-        config={activeConfig}
-      />
     </div>
   );
 };

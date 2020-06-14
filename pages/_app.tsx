@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, FunctionComponent } from "react";
 import clsx from "clsx";
 import Head from "next/head";
+import App, { AppProps } from "next/app";
 
 import { createStyles, Theme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Drawer, List, IconButton, CssBaseline, Divider } from "@material-ui/core";
@@ -9,12 +9,19 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
-import classes from "*.module.css";
 import theme from "@/components/Theme";
 
-export default function MyApp(props) {
-  const { Component, pageProps } = props;
+// Generated
+import classes from "*.module.css";
+import { NextComponentType } from "next";
+import { GalleryIndex } from "@/components/GalleryIndex";
 
+type MyAppProps = AppProps & {};
+
+const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentType["getInitialProps"] } = ({
+  Component,
+  pageProps,
+}) => {
   useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
@@ -86,7 +93,7 @@ export default function MyApp(props) {
 
   const classes = useStyles(theme);
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -122,7 +129,7 @@ export default function MyApp(props) {
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6" noWrap>
-                ART PAD
+                art.pprice.me
               </Typography>
             </Toolbar>
           </AppBar>
@@ -141,6 +148,7 @@ export default function MyApp(props) {
               </IconButton>
             </div>
             <Divider />
+            <GalleryIndex />
           </Drawer>
           <main
             className={clsx(classes.content, {
@@ -154,9 +162,6 @@ export default function MyApp(props) {
       </ThemeProvider>
     </React.Fragment>
   );
-}
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
 };
+
+export default MyApp;

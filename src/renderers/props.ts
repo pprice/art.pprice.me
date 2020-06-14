@@ -1,5 +1,6 @@
 import { PaperSize, Sizes } from "../const/sizes";
 import { D3RenderFrameProps } from "./d3/D3RenderFrame";
+import { BlendMode } from "@/const";
 
 export type RenderRef = {
   serialize: () => Blob;
@@ -8,6 +9,7 @@ export type RenderRef = {
 export type BaseRenderFrameProps = {
   size: keyof typeof Sizes;
   orientation: keyof PaperSize;
+  blendMode?: BlendMode;
   containerStroke?: string;
   containerStrokeWidth?: number;
   margin?: number | number[]; // LTRB

@@ -16,6 +16,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@/gallery": ["src/gallery"],
       "@/gallery/*": ["src/gallery/*"],
       "@/components": ["src/components"],
       "@/components/*": ["src/components/*"],

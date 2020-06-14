@@ -1,5 +1,5 @@
 import { RandomContext } from "./RandomContext";
-import { CanvasSize } from "@/const";
+import { CanvasSize, BlendMode } from "@/const";
 
 type SegmentStyle = "start" | "end" | "center";
 
@@ -10,6 +10,7 @@ export class RenderContext<TConfig> {
     public readonly pageCanvas: CanvasSize,
     public readonly canvas: CanvasSize,
     public readonly seed: string,
+    public readonly blendMode: BlendMode,
     public readonly config: TConfig
   ) {
     this.random = new RandomContext(seed, canvas);
@@ -32,6 +33,14 @@ export class RenderContext<TConfig> {
 
   get height(): number {
     return this.canvas.pixels[1];
+  }
+
+  get smallestDimension(): number {
+    return Math.min(this.width, this.height);
+  }
+
+  get center(): [number, number] {
+    return [this.width / 2, this.height / 2];
   }
 
   clampVertical(y: number, padding: number = 0): number {

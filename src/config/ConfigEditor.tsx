@@ -8,17 +8,12 @@ import { PropertyEditor } from "./editors/PropertyEditor";
 type ConfigEditorProps = {
   config: RenderConfiguration;
   onConfigUpdated: (runtimeConfig: any) => void;
-  initial?: any;
+  activeConfig?: any;
 };
 
-export const ConfigEditor: FunctionComponent<ConfigEditorProps> = ({ config, initial, onConfigUpdated }) => {
-  const [runtimeConfig, setRuntimeConfig] = useState<RuntimeRenderConfiguration<any>>(
-    getDefaultConfiguration(config, initial)
-  );
-
-  const [handleUpdate] = useDebouncedCallback((key: string, oldValue: any, newValue: any) => {
-    const updated = { ...runtimeConfig, [key]: newValue };
-    setRuntimeConfig(updated);
+export const ConfigEditor: FunctionComponent<ConfigEditorProps> = ({ config, activeConfig, onConfigUpdated }) => {
+  const [handleUpdate] = useDebouncedCallback((key: string, _oldValue: any, newValue: any) => {
+    const updated = { ...activeConfig, [key]: newValue };
     onConfigUpdated(updated);
   }, 250);
 
@@ -37,7 +32,7 @@ export const ConfigEditor: FunctionComponent<ConfigEditorProps> = ({ config, ini
             <Grid item xs={8}>
               <Box display="flex" flexDirection="row" width="100%" height="100%" alignItems="center">
                 <PropertyEditor
-                  initial={runtimeConfig[key]}
+                  initial={activeConfig[key]}
                   propertyKey={key}
                   property={prop}
                   onUpdated={handleUpdate}

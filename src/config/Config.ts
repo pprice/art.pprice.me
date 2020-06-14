@@ -7,12 +7,14 @@ export type NumericProperty = BaseProp<number> & {
   type: "number";
   min?: number;
   max?: number;
+  step?: number;
 };
 
 export type NumericRangeProperty = BaseProp<[number, number]> & {
   type: "number-range";
   min: number;
   max: number;
+  step?: number;
 };
 
 export type BooleanProperty = BaseProp<boolean> & {
@@ -29,7 +31,7 @@ export type RenderConfiguration = {
   [key: string]: RenderConfigurationProperty;
 };
 
-type PropertyInfer<T> = T extends NumericProperty
+export type PropertyInfer<T> = T extends NumericProperty
   ? number
   : T extends NumericRangeProperty
   ? [number, number]

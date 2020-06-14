@@ -25,14 +25,15 @@ export const MinMaxNumberEditor: PropertyEditorComponent<NumericProperty> = ({
         value={value}
         min={property.min}
         max={property.max}
+        step={property.step}
         onChange={(e, value) => handleUpdate(value as number)}
       />
-      <Box marginLeft={1} width={125}>
+      <Box marginLeft={1} width={150}>
         <TextField
-          variant="outlined"
+          variant="standard"
           type="number"
           size="small"
-          value={value}
+          value={value.toFixed(2)}
           onChange={(e) => handleUpdate(parseFloat(e.target.value))}
         />
       </Box>

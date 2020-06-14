@@ -1,10 +1,10 @@
-import { RenderConfigurationProperty } from "../Config";
+import { RenderConfigurationProperty, PropertyInfer } from "../Config";
 import { FunctionComponent } from "react";
 
 export type PropertyEditorProps<TProperty extends RenderConfigurationProperty = RenderConfigurationProperty> = {
   propertyKey: string;
   property: TProperty;
-  initial?: any;
+  initial?: PropertyInfer<TProperty>;
   onUpdated: (key: string, oldValue: any, newValue: any) => void;
 };
 

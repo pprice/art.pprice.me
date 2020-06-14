@@ -14,8 +14,24 @@ export class RandomContext {
     return this.round(this.random(), rounding);
   }
 
-  between(min: number, max: number, rounding?: Rounding): number {
-    return this.round(min + this.next() * (max - min), rounding);
+  between(range: [number, number], rounding?: Rounding): number;
+  between(min: number, max: number, rounding?: Rounding): number;
+
+  between(minOrRange: number | [number, number], maxOrRounding: number | Rounding | undefined, rounding?: Rounding) {
+    let min = 0;
+    let max = 0;
+    let _rounding: Rounding | undefined = rounding;
+    if (Array.isArray(minOrRange)) {
+      [min, max] = minOrRange;
+      _rounding = typeof maxOrRounding === "string" ? maxOrRounding : undefined;
+    } else if (typeof maxOrRounding === "number") {
+      min = minOrRange;
+      max = maxOrRounding;
+    } else {
+      throw new Error("Illegal arguments");
+    }
+
+    return this.round(min + this.next() * (max - min), _rounding);
   }
 
   upto(max: number, rounding?: Rounding) {

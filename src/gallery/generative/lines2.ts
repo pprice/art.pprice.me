@@ -21,7 +21,7 @@ const config = makeRenderConfig({
   },
 });
 
-const Lines: D3Artwork<typeof config> = {
+const Lines2: D3Artwork<typeof config> = {
   type: "d3",
   config,
   render: (selection, ctx) => {
@@ -30,23 +30,35 @@ const Lines: D3Artwork<typeof config> = {
     const vSegment = ctx.segmentDimension(ctx.config.num_lines, "vertical");
     const hSegment = ctx.segmentDimension(10, "horizontal");
 
+    let prior: number[][] = undefined;
+
     for (let segment of vSegment) {
-      const lineData: number[][] = [
-        [0, ctx.height / 4 + segment / 2],
-        ...ctx
-          .range(1, hSegment.length)
-          .map((_x, j) => ctx.clamp([hSegment[j], segment + ctx.random.between(ctx.config.variance)], 5)),
-        [ctx.width, ctx.height / 4 + segment / 2],
-      ];
+      const lineData: number[][] = prior
+        ? [...prior]
+        : [
+            [0, ctx.height / 4 + segment / 2],
+            ...ctx
+              .range(1, hSegment.length)
+              .map((_x, j) => ctx.clamp([hSegment[j], segment + ctx.random.between(ctx.config.variance)], 5)),
+            [ctx.width, ctx.height / 4 + segment / 2],
+          ];
+
+      if (prior) {
+        for (let i = 0; i < lineData.length; i++) {
+          lineData[i] = [lineData[i][0], lineData[i][1] + ctx.random.between(i, i * 2)];
+        }
+      }
+
+      prior = lineData;
 
       selection
         .append("path")
         .attr("d", lineFunction(lineData))
-        .attr("stroke", MicronPigma.blue)
-        .attr("stroke-width", "0.5px")
+        .attr("stroke", MicronPigma.brown)
+        .attr("stroke-width", "0.75px")
         .attr("fill", "none");
     }
   },
 };
 
-export default Lines;
+export default Lines2;
