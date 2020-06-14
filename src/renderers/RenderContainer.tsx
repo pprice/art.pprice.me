@@ -1,6 +1,19 @@
 import React, { FunctionComponent, useRef, useState, useMemo } from "react";
 import FileSaver from "file-saver";
-import { Box, Button, TextField, IconButton, Select, MenuItem, Switch, Zoom, Tooltip } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  TextField,
+  IconButton,
+  Select,
+  MenuItem,
+  Switch,
+  Zoom,
+  Tooltip,
+  useMediaQuery,
+  Typography,
+  Divider,
+} from "@material-ui/core";
 
 import ArrowDownloadIcon from "@material-ui/icons/ArrowDownward";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -17,6 +30,7 @@ import { RenderFrame } from "./RenderFrame";
 import { RenderConfiguration, getDefaultConfiguration, ConfigEditor } from "../config";
 import { useDebounce } from "../hooks/UseDebounce";
 import { PartialBy } from "@/utils";
+import theme from "@/components/Theme";
 
 type PartialRenderFrameProps = "seed" | "orientation" | "size" | "blendMode" | "margin";
 
@@ -35,6 +49,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   ...props
 }) => {
   const renderRef = useRef<RenderRef>();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   const [configPanelOpen, setConfigPanelOpen] = useState(false);
   const [seed, setSeed] = useState(initialSeed || "");
@@ -63,11 +78,8 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   return (
     <div style={{ width: "100%" }}>
-      <Box display="flex" marginBottom={2} flexDirection="row" alignItems="center">
-        <Tooltip title="Seed">
-          <CakeIcon />
-        </Tooltip>
-        <Box marginLeft={1} marginRight={2}>
+      <Box display="flex" marginBottom={2} flexDirection="row" alignItems="center" flexWrap="wrap">
+        <Box marginRight={2} alignItems="center" display="flex">
           <TextField
             size="small"
             label={"Seed"}
@@ -83,62 +95,15 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             }}
           />
         </Box>
-        <Tooltip title="Dimensions">
-          <AspectRatioIcon />
-        </Tooltip>
-        <Box marginLeft={1} marginRight={2}>
-          <Select value={size} onChange={(e) => setSize(e.target.value as PaperSizes)}>
-            <MenuItem value="Bristol9x12">Bristol: 9x12</MenuItem>
-            <MenuItem value="Bristol11x17">Bristol: 11x17</MenuItem>
-            <MenuItem value="A4">A4</MenuItem>
-            <MenuItem value="A3">A3</MenuItem>
-          </Select>
-        </Box>
-        <Tooltip title="Orientation">
-          <RotateRightIcon />
-        </Tooltip>
-        <Box marginLeft={1} marginRight={2}>
-          <Select value={orientation} onChange={(e) => setOrientation(e.target.value as "landscape" | "portrait")}>
-            <MenuItem value="landscape">Landscape</MenuItem>
-            <MenuItem value="portrait">Portrait</MenuItem>
-          </Select>
-        </Box>
-        <Tooltip title="Blend Mode">
-          <ColorizeIcon />
-        </Tooltip>
 
-        <Box marginLeft={1} marginRight={2}>
-          <Select value={blendMode} onChange={(e) => setBlendMode(e.target.value as BlendMode)}>
-            {BLEND_MODES.map((mode) => (
-              <MenuItem key={mode} value={mode}>
-                {mode}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
-        <Box flexGrow={1}></Box>
         {activeConfig && (
-          <>
+          <Box marginLeft="auto" alignItems="center" display="flex">
             <SettingsIcon />
             <Switch size="small" value={configPanelOpen} onChange={(e, checked) => setConfigPanelOpen(checked)} />
-          </>
+          </Box>
         )}
-        <Box marginLeft={2}>
-          <Button
-            size="medium"
-            startIcon={<ArrowDownloadIcon />}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              const blob = renderRef.current.serialize();
-              FileSaver.saveAs(blob, defaultFileName || "Render.svg");
-            }}
-          >
-            Download SVG
-          </Button>
-        </Box>
       </Box>
-      <Box display="flex" flexDirection="row">
+      <Box display="flex" flexDirection={isDesktop ? "row" : "column"}>
         <Box flexGrow={1}>
           <RenderFrame
             {...props}
@@ -153,14 +118,87 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
         <Box>
           <Zoom in={configPanelOpen}>
-            <Box>
+            <Box marginTop={!isDesktop && 2}>
               {configPanelVisible && (
-                <Box width={350}>
+                <Box width={isDesktop ? 350 : "100%"}>
+                  <Box marginLeft={isDesktop && 2} alignItems="center" display="flex" marginBottom={1}>
+                    <Box marginRight={1} alignItems="center" display="flex">
+                      <Tooltip title="Dimensions">
+                        <AspectRatioIcon />
+                      </Tooltip>
+                    </Box>
+                    <Select fullWidth value={size} onChange={(e) => setSize(e.target.value as PaperSizes)}>
+                      <MenuItem value="Bristol9x12">Bristol: 9x12</MenuItem>
+                      <MenuItem value="Bristol11x17">Bristol: 11x17</MenuItem>
+                      <MenuItem value="A4">A4</MenuItem>
+                      <MenuItem value="A3">A3</MenuItem>
+                    </Select>
+                  </Box>
+
+                  <Box marginLeft={isDesktop && 2} alignItems="center" display="flex" marginBottom={1}>
+                    <Box marginRight={1} alignItems="center" display="flex">
+                      <Tooltip title="Orientation">
+                        <RotateRightIcon />
+                      </Tooltip>
+                    </Box>
+                    <Select
+                      fullWidth
+                      value={orientation}
+                      onChange={(e) => setOrientation(e.target.value as "landscape" | "portrait")}
+                    >
+                      <MenuItem value="landscape">Landscape</MenuItem>
+                      <MenuItem value="portrait">Portrait</MenuItem>
+                    </Select>
+                  </Box>
+
+                  <Box marginLeft={isDesktop && 2} alignItems="center" display="flex" marginBottom={1}>
+                    <Box marginRight={1} alignItems="center" display="flex">
+                      <Tooltip title="Blend Mode">
+                        <ColorizeIcon />
+                      </Tooltip>
+                    </Box>
+                    <Select fullWidth value={blendMode} onChange={(e) => setBlendMode(e.target.value as BlendMode)}>
+                      {BLEND_MODES.map((mode) => (
+                        <MenuItem key={mode} value={mode}>
+                          {mode}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                  <Box marginBottom={2} />
+                  <Box marginLeft={isDesktop && 2}>
+                    <Divider />
+                  </Box>
                   <ConfigEditor
                     config={config}
                     activeConfig={activeConfig}
                     onConfigUpdated={(updated) => setActiveConfig(updated)}
                   />
+                  <Box marginLeft={isDesktop && 2} marginTop={1}>
+                    <Divider />
+                  </Box>
+                  <Box display="flex" flexDirection="row" justifyContent="flex-end" marginTop={2} alignItems="center">
+                    <Box marginRight={1}>
+                      <Typography>Download</Typography>
+                    </Box>
+                    <Box marginRight={1}>
+                      <Button
+                        size="medium"
+                        startIcon={<ArrowDownloadIcon />}
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          const blob = renderRef.current.serialize();
+                          FileSaver.saveAs(blob, defaultFileName || "Render.svg");
+                        }}
+                      >
+                        SVG
+                      </Button>
+                    </Box>
+                    <Button size="medium" startIcon={<ArrowDownloadIcon />} variant="outlined" color="primary" disabled>
+                      PNG
+                    </Button>
+                  </Box>
                 </Box>
               )}
             </Box>

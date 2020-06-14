@@ -101,7 +101,7 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(
     }
 
     return (
-      <div style={{ background: "#EEE", padding: 20 }}>
+      <div>
         <svg
           viewBox={svgSize.viewBox}
           preserveAspectRatio="xMidYMid meet"

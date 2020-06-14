@@ -5,7 +5,6 @@ import { RenderConfiguration } from "@/config";
 // providers
 import * as generative from "./generative";
 import * as math from "./math";
-import { unstable_batchedUpdates } from "react-dom";
 
 type ArtworkExport<TConfig extends RenderConfiguration> = {
   default?: Artwork<TConfig>;

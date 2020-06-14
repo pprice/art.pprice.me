@@ -93,7 +93,7 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
 
   const classes = useStyles(theme);
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -128,9 +128,11 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap>
-                art.pprice.me
-              </Typography>
+              {!open && (
+                <Typography variant="h6" noWrap>
+                  art.pprice.me
+                </Typography>
+              )}
             </Toolbar>
           </AppBar>
           <Drawer
@@ -143,6 +145,7 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
             }}
           >
             <div className={classes.drawerHeader}>
+              <Typography>art.pprice.me</Typography>
               <IconButton onClick={handleDrawerClose}>
                 {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               </IconButton>
