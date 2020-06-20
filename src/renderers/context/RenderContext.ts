@@ -3,7 +3,7 @@ import { CanvasSize, BlendMode } from "@/const";
 
 type SegmentStyle = "start" | "end" | "center";
 
-export class RenderContext<TConfig> {
+export class RenderContext<TConfig, TSetupResult = undefined> {
   public readonly random: RandomContext;
 
   constructor(
@@ -11,7 +11,8 @@ export class RenderContext<TConfig> {
     public readonly canvas: CanvasSize,
     public readonly seed: string,
     public readonly blendMode: BlendMode,
-    public readonly config: TConfig
+    public readonly config: TConfig,
+    public readonly setup: TSetupResult
   ) {
     this.random = new RandomContext(seed, canvas);
   }
@@ -61,7 +62,7 @@ export class RenderContext<TConfig> {
 
   segment(horizontal: number, vertical: number, style: SegmentStyle = "center"): number[][] {
     const hSegmentSize = this.canvas.pixels[0] / horizontal;
-    const vSegmentSize = this.canvas.pixels[1] / horizontal;
+    const vSegmentSize = this.canvas.pixels[1] / vertical;
 
     const hAdjust = this.getSegmentAdjustment(style, hSegmentSize);
     const yAdjust = this.getSegmentAdjustment(style, vSegmentSize);
@@ -78,15 +79,15 @@ export class RenderContext<TConfig> {
   }
 
   segmentAspectRatio(count: number, style: SegmentStyle = "center"): number[][] {
-    if (this.canvas.pixels[0] === this.canvas.pixels[1]) {
+    if (this.width === this.height) {
       return this.segment(count, count, style);
-    } else if (this.canvas.pixels[0] > this.canvas.pixels[1]) {
+    } else if (this.width > this.height) {
       const horizontal = count;
-      const vertical = Math.floor(count * (this.canvas.pixels[1] / this.canvas.pixels[0]));
+      const vertical = Math.floor(count * (this.height / this.width));
       return this.segment(horizontal, vertical, style);
     } else {
       const vertical = count;
-      const horizontal = Math.floor(count * (this.canvas.pixels[0] / this.canvas.pixels[1]));
+      const horizontal = Math.floor(count * (this.width / this.height));
       return this.segment(horizontal, vertical, style);
     }
   }

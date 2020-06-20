@@ -11,23 +11,35 @@ type InitialProps = {
   margin: number;
 };
 
-type BaseArtwork<TConfig extends RenderConfiguration> = {
+type SetupProducer<TSetupResult> = (statusCallback: (message: string) => void) => Promise<TSetupResult>;
+
+export type SetupFunc<TConfig extends RenderConfiguration, TSetupResult extends object> = (
+  config: TConfig,
+  prior: TSetupResult | undefined
+) => SetupProducer<TSetupResult> | undefined;
+
+type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends object = undefined> = {
   initialProps?: Partial<InitialProps>;
   config: TConfig;
   path?: string;
   attribution?: string;
+  setup?: SetupFunc<TConfig, TSetupResult>;
 };
 
 export type D3Artwork<
   TConfig extends RenderConfiguration,
+  TSetupResult extends object = undefined,
   TBaseType extends BaseType = BaseType,
   TDatum = any
-> = BaseArtwork<TConfig> & {
+> = BaseArtwork<TConfig, TSetupResult> & {
   type: "d3";
   render: (
     selection: D3Selection<TBaseType, TDatum>,
-    context: D3RenderContext<RuntimeRenderConfiguration<TConfig>>
+    context: D3RenderContext<RuntimeRenderConfiguration<TConfig>, TSetupResult>
   ) => Promise<void> | void;
 };
 
-export type Artwork<TConfig extends RenderConfiguration> = D3Artwork<TConfig>;
+export type Artwork<TConfig extends RenderConfiguration, TSetupResult extends object> = D3Artwork<
+  TConfig,
+  TSetupResult
+>;

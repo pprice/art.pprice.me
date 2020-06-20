@@ -9,7 +9,7 @@ import { BaseType } from "d3";
 
 export type D3RenderFrameProps<TDatum> = BaseRenderFrameProps & {
   type: "d3";
-  onRender: (selection: D3Selection<BaseType, TDatum>, context: D3RenderContext<any>) => Promise<void> | void;
+  onRender: (selection: D3Selection<BaseType, TDatum>, context: D3RenderContext<any, any>) => Promise<void> | void;
 };
 
 export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(
@@ -65,7 +65,7 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(
       const drawingCanvas: CanvasSize = createCanvasSize(drawingDimensions[0], drawingDimensions[1]);
 
       // TODO: Move to memo
-      const context = new D3RenderContext(svgSize, drawingCanvas, seed, blendMode, config);
+      const context = new D3RenderContext(svgSize, drawingCanvas, seed, blendMode, config, props.setupResult);
       const drawLayer = context.layer(root, "draw");
       const attributionLayer = context.layer(root, "attribution");
       const overlayLayer = context.layer(root, "overlay");

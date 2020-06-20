@@ -9,11 +9,18 @@ export type D3Selection<TBaseType extends BaseType = BaseType, TDatum = any> = S
   TDatum
 >;
 
-export class D3RenderContext<TConfig> extends RenderContext<TConfig> {
+export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfig, TSetupConfig> {
   private layerId: number = 0;
 
-  constructor(pageCanvas: CanvasSize, canvas: CanvasSize, seed: string, blendMode: BlendMode, config: TConfig) {
-    super(pageCanvas, canvas, seed, blendMode, config);
+  constructor(
+    pageCanvas: CanvasSize,
+    canvas: CanvasSize,
+    seed: string,
+    blendMode: BlendMode,
+    config: TConfig,
+    setup: TSetupConfig
+  ) {
+    super(pageCanvas, canvas, seed, blendMode, config, setup);
   }
 
   private appendLayer(

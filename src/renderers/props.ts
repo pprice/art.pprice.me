@@ -14,6 +14,7 @@ export type BaseRenderFrameProps = {
   containerStrokeWidth?: number;
   margin?: number | number[]; // LTRB
   config?: any;
+  setupResult?: any;
   seed: string;
   attribution?: string;
   ref?: React.MutableRefObject<RenderRef>;

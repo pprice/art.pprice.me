@@ -37,6 +37,7 @@ const ArtworkPage: FunctionComponent = () => {
         type={match.type}
         config={match.config}
         onRender={match.render}
+        onSetup={match.setup}
         attribution={match.attribution || `${typedSlug.join(" / ")} / [SEED] / [DATE]`}
         {...match.initialProps}
       />

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useRef, useState, useMemo } from "react";
+import React, { FunctionComponent, useRef, useState, useMemo, useEffect } from "react";
 import FileSaver from "file-saver";
 import {
   Box,
@@ -19,7 +19,6 @@ import ArrowDownloadIcon from "@material-ui/icons/ArrowDownward";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import AspectRatioIcon from "@material-ui/icons/AspectRatio";
 import RotateRightIcon from "@material-ui/icons/RotateRight";
-import CakeIcon from "@material-ui/icons/Cake";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ColorizeIcon from "@material-ui/icons/Colorize";
 
@@ -31,12 +30,14 @@ import { RenderConfiguration, getDefaultConfiguration, ConfigEditor } from "../c
 import { useDebounce } from "../hooks/UseDebounce";
 import { PartialBy } from "@/utils";
 import theme from "@/components/Theme";
+import { SetupFunc } from "@/gallery/types/d3";
 
 type PartialRenderFrameProps = "seed" | "orientation" | "size" | "blendMode" | "margin";
 
 type RenderContainerProps = PartialBy<Omit<RenderFrameProps, "ref">, PartialRenderFrameProps> & {
   defaultFileName?: string;
   config?: RenderConfiguration;
+  onSetup?: SetupFunc<any, any>;
 };
 
 export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
@@ -46,6 +47,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   blendMode: initialBlendMode,
   size: initialSize,
   config,
+  onSetup,
   ...props
 }) => {
   const renderRef = useRef<RenderRef>();
@@ -62,6 +64,33 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
   const [activeConfig, setActiveConfig] = useState<any>(initialConfig);
+  const [activeSetup, setActiveSetup] = useState<any>(undefined);
+  const [inSetup, setInSetup] = useState(true);
+
+  useEffect(() => {
+    if (!activeConfig) {
+      return;
+    } else if (!onSetup) {
+      setInSetup(false);
+      return;
+    }
+
+    const setupProducer = onSetup(activeConfig, activeSetup);
+
+    if (!setupProducer) {
+      return;
+    }
+
+    setInSetup(true);
+    console.log("Starting setup");
+
+    setupProducer(() => {})
+      .then((res) => setActiveSetup(res))
+      .finally(() => {
+        setInSetup(false);
+        console.log("Completed setup");
+      });
+  }, [onSetup, activeConfig]);
 
   const configPanelVisible = useMemo(() => activeConfig != undefined && configPanelOpen, [
     activeConfig,
@@ -75,6 +104,10 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         .toUpperCase()
     );
   };
+
+  if (inSetup || !activeConfig) {
+    return <Typography>Setting up...</Typography>;
+  }
 
   return (
     <div style={{ width: "100%" }}>
@@ -107,6 +140,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         <Box flexGrow={1}>
           <RenderFrame
             {...props}
+            setupResult={activeSetup}
             size={size}
             orientation={orientation}
             ref={renderRef}
