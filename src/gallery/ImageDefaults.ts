@@ -3,14 +3,14 @@ import { ImageSource } from "@/config";
 export const PLACES: ImageSource[] = [
   {
     name: "Seattle",
-    source: "/images/seattle.jpg",
+    source: "/images/seattle2.jpg",
   },
 ];
 
 export const PEOPLE: ImageSource[] = [
   {
     name: "Boris",
-    source: "/images/boris.jpg",
+    source: "/images/boris2.jpg",
   },
 ];
 
