@@ -2,12 +2,11 @@ import { RenderContext } from "../context/RenderContext";
 import { CanvasSize, BlendMode } from "@/const";
 import { Selection, BaseType } from "d3";
 
-export type D3Selection<TBaseType extends BaseType = BaseType, TDatum = any> = Selection<
-  TBaseType,
-  unknown,
-  HTMLElement,
-  TDatum
->;
+export type D3Selection<
+  GElement extends BaseType = BaseType,
+  TDatum = any,
+  PElement extends BaseType = BaseType
+> = Selection<GElement, TDatum, PElement, TDatum>;
 
 export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfig, TSetupConfig> {
   private layerId: number = 0;

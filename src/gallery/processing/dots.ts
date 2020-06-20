@@ -13,27 +13,29 @@ const config = makeRenderConfig({
     min: 1,
     max: 5,
     step: 0.2,
-    default: 3,
+    default: 2.5,
   },
   low_threshold: {
     type: "number",
-    min: 0,
-    max: 0.9,
-    step: 0.05,
-    default: 0.5,
+    min: 0.5,
+    max: 1,
+    step: 0.005,
+    default: 0.8,
   },
   detail: {
     type: "number",
     min: 50,
     max: 200,
     step: 5,
-    default: 150,
+    default: 120,
   },
 });
 
 type SetupContext = {
   canvas: OffscreenCanvasContext;
   source: string;
+  detail: number;
+  chunks: number[];
 };
 
 const Processing: D3Artwork<typeof config, SetupContext> = {
@@ -45,39 +47,37 @@ const Processing: D3Artwork<typeof config, SetupContext> = {
     containerStrokeWidth: 0,
   },
   setup: (config, prior) => {
-    if (prior && config.image === prior.source) {
+    if (prior && config.image === prior.source && config.detail === prior.detail) {
       return undefined;
     }
 
-    return async () => ({
-      source: config.image,
-      canvas: await createOffscreenCanvas(config.image),
-    });
+    return async () => {
+      const canvas = await createOffscreenCanvas(config.image);
+      return {
+        source: config.image,
+        chunks: canvas.aggregateChunksAspectRatioFlat(config.detail, "avg", "luminance"),
+        detail: config.detail,
+        canvas,
+      };
+    };
   },
   render: (selection, ctx) => {
     const boxSize = ctx.centerFitRect(ctx.setup.canvas.size);
-
-    const lumChunks = ctx.setup.canvas.aggregateChunksAspectRatioFlat(ctx.config.detail, "median", "luminance");
-
     const d1 = ctx.layer(selection, "d1");
-
     const segments = ctx.segmentAspectRatio(ctx.config.detail, "center", boxSize[2], boxSize[3]);
+    const zip = segments.map((s, i) => ({ xy: s, lum: ctx.setup.chunks[i] }));
 
-    for (let i = 0; i < segments.length; i++) {
-      const self = segments[i];
-
-      const r = (1 - lumChunks[i]) * ctx.config.radius;
-
-      if (r < ctx.config.low_threshold) {
-        continue;
-      }
-
-      ctx
-        .plotLine(d1, "circle")
-        .attr("cx", boxSize[0] + self[0])
-        .attr("cy", boxSize[1] + self[1])
-        .attr("r", r);
-    }
+    ctx.applyPlotLineAttr(
+      d1
+        .selectAll("circle")
+        .data(zip)
+        .enter()
+        .filter((g) => g.lum < ctx.config.low_threshold)
+        .append("circle")
+        .attr("cx", (v) => boxSize[0] + v.xy[0])
+        .attr("cy", (v) => boxSize[1] + v.xy[1])
+        .attr("r", (v) => (1 - v.lum) * ctx.config.radius)
+    );
   },
 };
 
