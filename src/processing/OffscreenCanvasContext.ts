@@ -1,5 +1,6 @@
-import * as chroma from "chroma-js";
-import { values } from "d3";
+// import * as chroma from "chroma-js";
+
+import { rgb2Luminance, RGBA, rgb2hsl } from "./Color";
 
 export async function createOffscreenCanvas(source: string) {
   const image = await loadImageAsync(source);
@@ -56,11 +57,11 @@ const Aggregators: { [K in AggregateOperation]: (values: number[]) => number } =
   },
 };
 
-const ValueAccessors: { [K in AggregateValue]: (c: chroma.Color) => number } = {
-  hue: (c) => c.hsl[0],
-  lightness: (c) => c.hsl[2],
-  saturation: (c) => c.hsl[1],
-  luminance: (c) => c.luminance(),
+const ValueAccessors: { [K in AggregateValue]: (c: RGBA) => number } = {
+  hue: (c) => rgb2hsl(c)[0],
+  saturation: (c) => rgb2hsl(c)[1],
+  lightness: (c) => rgb2hsl(c)[2],
+  luminance: (c) => rgb2Luminance(c),
 };
 
 export class OffscreenCanvasContext {
@@ -74,25 +75,34 @@ export class OffscreenCanvasContext {
     return this.canvas.height;
   }
 
+  get size(): [number, number] {
+    return [this.width, this.height];
+  }
+
   get smallestDimension(): number {
     return Math.min(this.width, this.height);
+  }
+
+  get largestDimension(): number {
+    return Math.max(this.width, this.height);
   }
 
   get center(): [number, number] {
     return [this.width / 2, this.height / 2];
   }
 
-  getColor(x: number, y: number): chroma.Color {
-    const raw = this.context.getImageData(x, y, 1, 1);
-    return chroma.rgb(raw.data[0], raw.data[1], raw.data[2]);
+  getColor(x: number, y: number): RGBA {
+    const raw = this.getImageData(x, y, 1, 1);
+    return [raw.getUint8(0), raw.getUint8(1), raw.getUint8(2), raw.getUint8(3)];
   }
 
-  getChunkFlat(x: number, y: number, w: number, h: number): chroma.Color[] {
-    const raw = this.context.getImageData(x, y, w, h);
+  getChunkFlat(x: number, y: number, w: number, h: number): RGBA[] {
+    // const raw = this.context.getImageData(x, y, w, h);
+    const dv = this.getImageData(x, y, w, h);
 
-    const res: chroma.Color[] = [];
-    for (let i = 0; i < raw.data.length; i += 4) {
-      res.push(chroma.rgb(raw.data[i], raw.data[i + 1], raw.data[i + 2]));
+    const res: RGBA[] = [];
+    for (let i = 0; i < dv.byteLength; i += 4) {
+      res.push([dv.getUint8(i), dv.getUint8(i + 1), dv.getUint8(i + 2), dv.getUint8(i + 3)]);
     }
 
     return res;
@@ -136,20 +146,42 @@ export class OffscreenCanvasContext {
     return Aggregators[agg](mapped);
   }
 
-  getChunk(x: number, y: number, w: number, h: number): chroma.Color[][] {
-    const raw = this.context.getImageData(x, y, w, h);
-    const res: chroma.Color[][] = [[]];
-    let current = res[0];
+  private imageDataCache:
+    | {
+        width: number;
+        height: number;
+        data: Uint32Array;
+      }
+    | undefined;
 
-    for (let i = 0; i < raw.data.length; i += 4) {
-      current.push(chroma.rgb(raw.data[i], raw.data[i + 1], raw.data[i + 2]));
+  private getImageData(x: number, y: number, w: number, h: number): DataView {
+    if (!this.imageDataCache) {
+      const iData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
-      if (current.length === raw.width) {
-        current = [];
-        res.push(current);
+      this.imageDataCache = {
+        data: new Uint32Array(iData.data.buffer),
+        width: iData.width,
+        height: iData.height,
+      };
+    }
+
+    let arr = new Uint32Array(w * h); // One 32bit int per pixel
+    let i = 0;
+    const originalWidth = this.imageDataCache.width;
+    const originalHeight = this.imageDataCache.height;
+    const data = this.imageDataCache.data;
+
+    for (var row = y; row < h + y; row++) {
+      for (var col = x; col < w + x; col++) {
+        var offset = row * originalWidth + col;
+        if (col < 0 || col >= originalWidth || row < 0 || row >= originalHeight) {
+          arr[i++] = 0;
+        } else {
+          arr[i++] = data[offset];
+        }
       }
     }
 
-    return res;
+    return new DataView(arr.buffer);
   }
 }

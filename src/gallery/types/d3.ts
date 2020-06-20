@@ -8,7 +8,9 @@ type InitialProps = {
   orientation: "landscape" | "portrait";
   blendMode: BlendMode;
   size: PaperSizes;
-  margin: number;
+  margin: number | number[];
+  containerStroke: string;
+  containerStrokeWidth: number;
 };
 
 type SetupProducer<TSetupResult> = (statusCallback: (message: string) => void) => Promise<TSetupResult>;
