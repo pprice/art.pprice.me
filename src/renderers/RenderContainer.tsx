@@ -63,9 +63,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   const [configPanelOpen, setConfigPanelOpen] = useState(false);
   const [seed, setSeed] = useState(initialSeed || "");
-  const [orientation, setOrientation] = useState<"landscape" | "portrait">(
-    initialOrientation || isDesktop ? "landscape" : "portrait"
-  );
+  const [orientation, setOrientation] = useState<"landscape" | "portrait">(() => initialOrientation || "landscape");
   const [blendMode, setBlendMode] = useState<BlendMode>(initialBlendMode || "multiply");
 
   const [size, setSize] = useState<PaperSizes>(initialSize || "Bristol9x12");
@@ -160,7 +158,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
         <Box>
           <Zoom in={configPanelOpen}>
-            <Box marginTop={!isDesktop && 2}>
+            <Box marginTop={!isDesktop ? 2 : 0}>
               {configPanelVisible && (
                 <Box width={isDesktop ? 350 : "100%"}>
                   {supportsRandom && (
@@ -182,7 +180,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
                       />
                     </Box>
                   )}
-                  <Box marginLeft={isDesktop && 2} alignItems="center" display="flex" marginBottom={1}>
+                  <Box marginLeft={isDesktop ? 2 : 0} alignItems="center" display="flex" marginBottom={1}>
                     <Box marginRight={1} alignItems="center" display="flex">
                       <Tooltip title="Dimensions">
                         <AspectRatioIcon />
@@ -212,7 +210,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
                     </Select>
                   </Box>
 
-                  <Box marginLeft={isDesktop && 2} alignItems="center" display="flex" marginBottom={1}>
+                  <Box marginLeft={isDesktop ? 2 : 0} alignItems="center" display="flex" marginBottom={1}>
                     <Box marginRight={1} alignItems="center" display="flex">
                       <Tooltip title="Blend Mode">
                         <ColorizeIcon />
@@ -227,7 +225,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
                     </Select>
                   </Box>
                   <Box marginBottom={2} />
-                  <Box marginLeft={isDesktop && 2}>
+                  <Box marginLeft={isDesktop ? 2 : 0}>
                     <Divider />
                   </Box>
                   <ConfigEditor
@@ -235,7 +233,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
                     activeConfig={activeConfig}
                     onConfigUpdated={(updated) => setActiveConfig(updated)}
                   />
-                  <Box marginLeft={isDesktop && 2} marginTop={1}>
+                  <Box marginLeft={isDesktop ? 2 : 0} marginTop={1}>
                     <Divider />
                   </Box>
                   <Box display="flex" flexDirection="row" justifyContent="flex-end" marginTop={2} alignItems="center">

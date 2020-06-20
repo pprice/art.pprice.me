@@ -1,1 +1,3 @@
-export * from "./dots";
+import * as Dots from "./dots";
+
+export { Dots };

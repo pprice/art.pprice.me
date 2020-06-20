@@ -38,7 +38,7 @@ type SetupContext = {
   chunks: number[];
 };
 
-const Processing: D3Artwork<typeof config, SetupContext> = {
+const Dots: D3Artwork<typeof config, SetupContext> = {
   type: "d3",
   config,
   path: "processing/dots",
@@ -82,4 +82,4 @@ const Processing: D3Artwork<typeof config, SetupContext> = {
   },
 };
 
-export default Processing;
+export default Dots;
