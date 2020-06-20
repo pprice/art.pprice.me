@@ -63,7 +63,9 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   const [configPanelOpen, setConfigPanelOpen] = useState(false);
   const [seed, setSeed] = useState(initialSeed || "");
-  const [orientation, setOrientation] = useState(initialOrientation || isDesktop ? "landscape" : "portrait");
+  const [orientation, setOrientation] = useState<"landscape" | "portrait">(
+    initialOrientation || isDesktop ? "landscape" : "portrait"
+  );
   const [blendMode, setBlendMode] = useState<BlendMode>(initialBlendMode || "multiply");
 
   const [size, setSize] = useState<PaperSizes>(initialSize || "Bristol9x12");
