@@ -2,6 +2,7 @@ import React, { FunctionComponent } from "react";
 import { PropertyEditorProps } from "./types";
 import { MinMaxNumberEditor } from "./MinMaxNumberEditor";
 import { NumberRangeEditor } from "./NumberRangeEditor";
+import { ImageEditor } from "./ImageEditor";
 
 export const PropertyEditor: FunctionComponent<PropertyEditorProps> = ({ property, initial, ...props }) => {
   switch (property.type) {
@@ -13,7 +14,8 @@ export const PropertyEditor: FunctionComponent<PropertyEditorProps> = ({ propert
       break;
     case "number-range":
       return <NumberRangeEditor property={property} initial={initial as [number, number]} {...props} />;
-      break;
+    case "image":
+      return <ImageEditor property={property} initial={initial as string} {...props} />;
     default:
       return null;
   }

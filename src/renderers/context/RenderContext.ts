@@ -1,6 +1,5 @@
 import { RandomContext } from "./RandomContext";
 import { CanvasSize, BlendMode } from "@/const";
-import { array } from "prop-types";
 
 type SegmentStyle = "start" | "end" | "center";
 
@@ -80,9 +79,17 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     }
 
     if (this.width > this.height) {
-      return [this.height * (w2 / h2), this.height];
+      if (h2 > w2) {
+        return [this.height * (w2 / h2), this.height];
+      } else {
+        return [this.width, this.width * (h2 / w2)];
+      }
     } else {
-      return [this.width, this.width * (h2 / w2)];
+      if (w2 < h2) {
+        return [this.height * (w2 / h2), this.height];
+      } else {
+        return [this.width, this.width * (h2 / w2)];
+      }
     }
   }
 

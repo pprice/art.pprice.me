@@ -15,7 +15,7 @@ type InitialProps = {
 
 type SetupProducer<TSetupResult> = (statusCallback: (message: string) => void) => Promise<TSetupResult>;
 
-export type SetupFunc<TConfig extends RenderConfiguration, TSetupResult extends object> = (
+export type SetupFunc<TConfig, TSetupResult extends object> = (
   config: TConfig,
   prior: TSetupResult | undefined
 ) => SetupProducer<TSetupResult> | undefined;
@@ -24,8 +24,10 @@ type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends objec
   initialProps?: Partial<InitialProps>;
   config: TConfig;
   path?: string;
+  description?: string;
+  supportsRandom?: boolean;
   attribution?: string;
-  setup?: SetupFunc<TConfig, TSetupResult>;
+  setup?: SetupFunc<RuntimeRenderConfiguration<TConfig>, TSetupResult>;
 };
 
 export type D3Artwork<

@@ -34,10 +34,13 @@ const ArtworkPage: FunctionComponent = () => {
         <title>art.pprice.me - {typedSlug.join("/")}</title>
       </Head>
       <RenderContainer
+        title={typedSlug.join(" / ")}
         type={match.type}
         config={match.config}
         onRender={match.render}
         onSetup={match.setup}
+        description={match.description}
+        supportsRandom={match.supportsRandom}
         attribution={match.attribution || `${typedSlug.join(" / ")} / [SEED] / [DATE]`}
         {...match.initialProps}
       />

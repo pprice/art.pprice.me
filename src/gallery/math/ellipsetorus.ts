@@ -55,7 +55,6 @@ const Torus: D3Artwork<typeof config> = {
       const pen = Pens[groupId];
 
       if (!layer) {
-        console.dir(groupId);
         continue;
       }
 

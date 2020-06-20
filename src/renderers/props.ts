@@ -18,6 +18,7 @@ export type BaseRenderFrameProps = {
   seed: string;
   attribution?: string;
   ref?: React.MutableRefObject<RenderRef>;
+  paused?: boolean;
 };
 
 export type RenderFrameProps<TDatum = any> = D3RenderFrameProps<TDatum>;

@@ -94,7 +94,7 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(
       };
 
       render();
-    }, [svgRef.current, onRender, seed, margins, attribution, svgSize, blendMode, config]);
+    }, [svgRef.current, onRender, seed, margins, attribution, svgSize, blendMode, config, props.setupResult]);
 
     if (!svgSize) {
       return null;

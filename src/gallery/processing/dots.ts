@@ -1,8 +1,13 @@
 import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
 import { OffscreenCanvasContext, createOffscreenCanvas } from "src/processing/OffscreenCanvasContext";
+import { DEFAULT_PREDEFINED_IMAGES } from "../ImageDefaults";
 
 const config = makeRenderConfig({
+  image: {
+    type: "image",
+    predefined: [...DEFAULT_PREDEFINED_IMAGES],
+  },
   radius: {
     type: "number",
     min: 1,
@@ -28,28 +33,28 @@ const config = makeRenderConfig({
 
 type SetupContext = {
   canvas: OffscreenCanvasContext;
+  source: string;
 };
 
 const Processing: D3Artwork<typeof config, SetupContext> = {
   type: "d3",
   config,
+  description: "Generates an output grid based off of input image median luminance",
   initialProps: {
     orientation: "portrait",
     containerStrokeWidth: 0,
   },
   setup: (config, prior) => {
-    if (prior) {
+    if (prior && config.image === prior.source) {
       return undefined;
     }
 
     return async () => ({
-      canvas: await createOffscreenCanvas(
-        "https://upload.wikimedia.org/wikipedia/commons/7/76/Boris_Johnson_official_portrait_%28cropped%29.jpg"
-      ),
+      source: config.image,
+      canvas: await createOffscreenCanvas(config.image),
     });
   },
   render: (selection, ctx) => {
-    // TODO: Fit within canvas
     const boxSize = ctx.centerFitRect(ctx.setup.canvas.size);
 
     const lumChunks = ctx.setup.canvas.aggregateChunksAspectRatioFlat(ctx.config.detail, "median", "luminance");

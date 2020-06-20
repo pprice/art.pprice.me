@@ -25,7 +25,19 @@ export type StringProperty = BaseProp<string> & {
   type: "string";
 };
 
-export type RenderConfigurationProperty = NumericProperty | NumericRangeProperty | BooleanProperty | StringProperty;
+export type ImageSource = { name: string; source: string };
+
+export type ImageProperty = BaseProp<string> & {
+  type: "image";
+  predefined?: ImageSource[];
+};
+
+export type RenderConfigurationProperty =
+  | NumericProperty
+  | NumericRangeProperty
+  | BooleanProperty
+  | StringProperty
+  | ImageProperty;
 
 export type RenderConfiguration = {
   [key: string]: RenderConfigurationProperty;
@@ -37,7 +49,7 @@ export type PropertyInfer<T> = T extends NumericProperty
   ? [number, number]
   : T extends BooleanProperty
   ? boolean
-  : T extends StringProperty
+  : T extends StringProperty | ImageProperty
   ? string
   : never;
 
@@ -109,6 +121,8 @@ function defaultForPropType(prop: RenderConfigurationProperty): any {
       return prop.default || [prop.min, prop.max];
     case "string":
       return prop.default || "";
+    case "image":
+      return prop.default || prop.predefined?.[0]?.source || "";
     default:
       return undefined;
   }

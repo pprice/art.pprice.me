@@ -13,6 +13,7 @@ import {
   useMediaQuery,
   Typography,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 
 import ArrowDownloadIcon from "@material-ui/icons/ArrowDownward";
@@ -21,6 +22,7 @@ import AspectRatioIcon from "@material-ui/icons/AspectRatio";
 import RotateRightIcon from "@material-ui/icons/RotateRight";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ColorizeIcon from "@material-ui/icons/Colorize";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 
 import { RenderFrameProps, RenderRef } from "./props";
 import { PaperSizes, BLEND_MODES, BlendMode } from "../const";
@@ -38,14 +40,20 @@ type RenderContainerProps = PartialBy<Omit<RenderFrameProps, "ref">, PartialRend
   defaultFileName?: string;
   config?: RenderConfiguration;
   onSetup?: SetupFunc<any, any>;
+  title?: string;
+  description?: string;
+  supportsRandom?: boolean;
 };
 
 export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   defaultFileName,
   seed: initialSeed,
+  supportsRandom,
   orientation: initialOrientation,
   blendMode: initialBlendMode,
   size: initialSize,
+  title,
+  description,
   config,
   onSetup,
   ...props
@@ -55,7 +63,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   const [configPanelOpen, setConfigPanelOpen] = useState(false);
   const [seed, setSeed] = useState(initialSeed || "");
-  const [orientation, setOrientation] = useState(initialOrientation || "landscape");
+  const [orientation, setOrientation] = useState(initialOrientation || isDesktop ? "landscape" : "portrait");
   const [blendMode, setBlendMode] = useState<BlendMode>(initialBlendMode || "multiply");
 
   const [size, setSize] = useState<PaperSizes>(initialSize || "Bristol9x12");
@@ -82,14 +90,14 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
     }
 
     setInSetup(true);
-    console.log("Starting setup");
 
-    setupProducer(() => {})
-      .then((res) => setActiveSetup(res))
-      .finally(() => {
-        setInSetup(false);
-        console.log("Completed setup");
-      });
+    setTimeout(() => {
+      setupProducer(() => {})
+        .then((res) => setActiveSetup(res))
+        .finally(() => {
+          setInSetup(false);
+        });
+    }, 200);
   }, [onSetup, activeConfig]);
 
   const configPanelVisible = useMemo(() => activeConfig != undefined && configPanelOpen, [
@@ -97,36 +105,34 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
     configPanelOpen,
   ]);
 
-  const generateSeed = () => {
+  const generateSeed = () =>
     setSeed(
       Math.floor(Math.random() * 100000000000)
         .toString(16)
         .toUpperCase()
     );
-  };
 
-  if (inSetup || !activeConfig) {
-    return <Typography>Setting up...</Typography>;
+  if (!activeConfig || (onSetup && !activeSetup)) {
+    return (
+      <Box display="flex" alignItems="center" flexDirection="column">
+        <CircularProgress />
+        <Typography variant="h5">Setting up...</Typography>
+      </Box>
+    );
   }
 
   return (
     <div style={{ width: "100%" }}>
       <Box display="flex" marginBottom={2} flexDirection="row" alignItems="center" flexWrap="wrap">
         <Box marginRight={2} alignItems="center" display="flex">
-          <TextField
-            size="small"
-            label={"Seed"}
-            variant="outlined"
-            value={seed}
-            onChange={(e) => setSeed(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <IconButton size="small" edge="end" onClick={generateSeed}>
-                  <RefreshIcon />
-                </IconButton>
-              ),
-            }}
-          />
+          <Typography variant="h5">{title}</Typography>
+          {description && (
+            <Box marginLeft={1} alignItems="center" marginBottom={-0.5}>
+              <Tooltip title={<Typography>{description}</Typography>}>
+                <InfoIcon opacity={0.7} />
+              </Tooltip>
+            </Box>
+          )}
         </Box>
 
         {activeConfig && (
@@ -140,12 +146,12 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         <Box flexGrow={1}>
           <RenderFrame
             {...props}
-            setupResult={activeSetup}
             size={size}
             orientation={orientation}
             ref={renderRef}
             seed={debouncedSeed}
             blendMode={blendMode}
+            setupResult={activeSetup}
             config={activeConfig}
           />
         </Box>
@@ -155,6 +161,25 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             <Box marginTop={!isDesktop && 2}>
               {configPanelVisible && (
                 <Box width={isDesktop ? 350 : "100%"}>
+                  {supportsRandom && (
+                    <Box marginLeft={isDesktop && 2} marginBottom={2}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={"Seed"}
+                        variant="outlined"
+                        value={seed}
+                        onChange={(e) => setSeed(e.target.value)}
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton size="small" edge="end" onClick={generateSeed}>
+                              <RefreshIcon />
+                            </IconButton>
+                          ),
+                        }}
+                      />
+                    </Box>
+                  )}
                   <Box marginLeft={isDesktop && 2} alignItems="center" display="flex" marginBottom={1}>
                     <Box marginRight={1} alignItems="center" display="flex">
                       <Tooltip title="Dimensions">
