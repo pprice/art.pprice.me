@@ -41,6 +41,7 @@ type SetupContext = {
 const Processing: D3Artwork<typeof config, SetupContext> = {
   type: "d3",
   config,
+  path: "processing/dots",
   description: "Generates an output grid based off of input image median luminance",
   initialProps: {
     orientation: "portrait",

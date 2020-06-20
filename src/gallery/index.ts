@@ -5,12 +5,13 @@ import { RenderConfiguration } from "@/config";
 // providers
 import * as generative from "./generative";
 import * as math from "./math";
+import * as processing from "./processing";
 
 type ArtworkExport<TConfig extends RenderConfiguration, TSetup extends object> = {
   default?: Artwork<TConfig, TSetup>;
 };
 
-const index: Record<string, Artwork<any, any>> = buildLookupFromImports(generative, math);
+const index: Record<string, Artwork<any, any>> = buildLookupFromImports(generative, math, processing);
 
 export function getArtworkRenderer<TConfig extends RenderConfiguration, TSetup extends object>(
   path: string[]
