@@ -71,21 +71,28 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const debouncedSeed = useDebounce(seed, 250);
 
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
-  const [activeConfig, setActiveConfig] = useState<any>(initialConfig);
+  const [activeConfig, setActiveConfig] = useState<any>();
+  const [pendingConfig, setPendingConfig] = useState<any>(initialConfig);
   const [activeSetup, setActiveSetup] = useState<any>(undefined);
   const [inSetup, setInSetup] = useState(true);
 
+  const onConfigUpdated = (updated) => {
+    setPendingConfig(updated);
+  };
+
   useEffect(() => {
-    if (!activeConfig) {
+    if (!pendingConfig) {
       return;
     } else if (!onSetup) {
       setInSetup(false);
+      setActiveConfig(pendingConfig);
       return;
     }
 
-    const setupProducer = onSetup(activeConfig, activeSetup);
+    const setupProducer = onSetup(pendingConfig, activeSetup);
 
     if (!setupProducer) {
+      setActiveConfig(pendingConfig);
       return;
     }
 
@@ -96,9 +103,13 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         .then((res) => setActiveSetup(res))
         .finally(() => {
           setInSetup(false);
+
+          if (pendingConfig !== activeConfig) {
+            setActiveConfig(pendingConfig);
+          }
         });
     }, 200);
-  }, [onSetup, activeConfig]);
+  }, [onSetup, pendingConfig]);
 
   const configPanelVisible = useMemo(() => activeConfig != undefined && configPanelOpen, [
     activeConfig,
@@ -162,7 +173,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
               {configPanelVisible && (
                 <Box width={isDesktop ? 350 : "100%"}>
                   {supportsRandom && (
-                    <Box marginLeft={isDesktop && 2} marginBottom={2}>
+                    <Box marginLeft={isDesktop ? 2 : 0} marginBottom={2}>
                       <TextField
                         fullWidth
                         size="small"
@@ -228,11 +239,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
                   <Box marginLeft={isDesktop ? 2 : 0}>
                     <Divider />
                   </Box>
-                  <ConfigEditor
-                    config={config}
-                    activeConfig={activeConfig}
-                    onConfigUpdated={(updated) => setActiveConfig(updated)}
-                  />
+                  <ConfigEditor config={config} activeConfig={activeConfig} onConfigUpdated={onConfigUpdated} />
                   <Box marginLeft={isDesktop ? 2 : 0} marginTop={1}>
                     <Divider />
                   </Box>

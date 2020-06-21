@@ -1,11 +1,8 @@
 import { RandomContext } from "./RandomContext";
 import { CanvasSize, BlendMode } from "@/const";
+import { Point, Size, Rect } from "@/geom";
 
 type SegmentStyle = "start" | "end" | "center";
-
-type Point = [number, number];
-type Size = [number, number];
-type Rect = [number, number, number, number];
 
 export class RenderContext<TConfig, TSetupResult = undefined> {
   public readonly random: RandomContext;
@@ -114,20 +111,20 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     return [...xy, ...wh];
   }
 
-  segment(
+  segmentPoint(
     horizontal: number,
     vertical: number,
     style: SegmentStyle = "center",
     w = this.width,
     h = this.height
-  ): number[][] {
+  ): Point[] | Rect[] {
     const hSegmentSize = w / horizontal;
     const vSegmentSize = h / vertical;
 
     const hAdjust = this.getSegmentAdjustment(style, hSegmentSize);
     const yAdjust = this.getSegmentAdjustment(style, vSegmentSize);
 
-    const res = [];
+    const res: Point[] = [];
 
     for (let x = 0; x < horizontal; x++) {
       for (let y = 0; y < vertical; y++) {
@@ -138,18 +135,38 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     return res;
   }
 
-  segmentAspectRatio(count: number, style: SegmentStyle = "center", w = this.width, h = this.height): number[][] {
-    if (w === h) {
-      return this.segment(count, count, style);
-    } else if (w > h) {
-      const horizontal = count;
-      const vertical = Math.floor(count * (h / w));
-      return this.segment(horizontal, vertical, style, w, h);
-    } else {
-      const vertical = count;
-      const horizontal = Math.floor(count * (w / h));
-      return this.segment(horizontal, vertical, style, w, h);
+  segmentBox(horizontal: number, vertical: number, w = this.width, h = this.height): Rect[] {
+    const hSegmentSize = w / horizontal;
+    const vSegmentSize = h / vertical;
+
+    const res: Rect[] = [];
+
+    for (let x = 0; x < horizontal; x++) {
+      for (let y = 0; y < vertical; y++) {
+        res.push([x * hSegmentSize, y * vSegmentSize, hSegmentSize, vSegmentSize]);
+      }
     }
+
+    return res;
+  }
+
+  segmentAspectRatio(count: number, style: "box", w?: number, h?: number): Rect[];
+  segmentAspectRatio(count: number, style: SegmentStyle, w?: number, h?: number): Point[];
+  segmentAspectRatio(count: number, style: SegmentStyle | "box" = "center", w = this.width, h = this.height) {
+    let vertical = 0;
+    let horizontal = 0;
+
+    if (w > h) {
+      horizontal = count;
+      vertical = Math.floor(count * (h / w));
+    } else {
+      vertical = count;
+      horizontal = Math.floor(count * (w / h));
+    }
+
+    return style === "box"
+      ? this.segmentBox(horizontal, vertical, w, h)
+      : this.segmentPoint(horizontal, vertical, style, w, h);
   }
 
   segmentDimension(

@@ -1,6 +1,6 @@
-export type RGBA = [number, number, number, number];
-export type RGB = [number, number, number];
-export type HSL = [number, number, number];
+export type RGBA = Uint8ClampedArray;
+export type RGB = Uint8ClampedArray;
+export type HSL = Uint8ClampedArray;
 
 export function rgb2Luminance(c: RGB | RGBA): number {
   const r = luminanceX(c[0]);
@@ -41,5 +41,5 @@ export function rgb2hsl(c: RGB | RGBA): HSL {
     hsl[0] /= 6;
   }
 
-  return hsl as HSL;
+  return new Uint8ClampedArray(hsl);
 }

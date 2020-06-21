@@ -25,7 +25,9 @@
       "@/const": ["src/const"],
       "@/const/*": ["src/const/*"],
       "@/utils": ["src/utils"],
-      "@/utils/*": ["src/utils/*"]
+      "@/utils/*": ["src/utils/*"],
+      "@/geom": ["src/geom"],
+      "@/geom/*": ["src/geom/*"]
     }
   },
   "exclude": ["node_modules"],

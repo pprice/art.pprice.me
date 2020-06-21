@@ -32,12 +32,20 @@ export type ImageProperty = BaseProp<string> & {
   predefined?: ImageSource[];
 };
 
+export type Choice<T extends string> = { label?: string; value: T };
+
+export type ChoiceProperty<T extends string = string> = BaseProp<T> & {
+  type: "choice";
+  choices: Choice<T>[];
+};
+
 export type RenderConfigurationProperty =
   | NumericProperty
   | NumericRangeProperty
   | BooleanProperty
   | StringProperty
-  | ImageProperty;
+  | ImageProperty
+  | ChoiceProperty;
 
 export type RenderConfiguration = {
   [key: string]: RenderConfigurationProperty;
@@ -49,7 +57,7 @@ export type PropertyInfer<T> = T extends NumericProperty
   ? [number, number]
   : T extends BooleanProperty
   ? boolean
-  : T extends StringProperty | ImageProperty
+  : T extends StringProperty | ImageProperty | ChoiceProperty
   ? string
   : never;
 
@@ -123,6 +131,8 @@ function defaultForPropType(prop: RenderConfigurationProperty): any {
       return prop.default || "";
     case "image":
       return prop.default || prop.predefined?.[0]?.source || "";
+    case "choice":
+      return prop.default || prop.choices?.[0] || undefined;
     default:
       return undefined;
   }

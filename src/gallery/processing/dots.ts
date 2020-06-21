@@ -1,7 +1,7 @@
 import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
 import { OffscreenCanvasContext, createOffscreenCanvas } from "src/processing/OffscreenCanvasContext";
-import { DEFAULT_PREDEFINED_IMAGES } from "../ImageDefaults";
+import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
 
 const config = makeRenderConfig({
   image: {
@@ -56,7 +56,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
       const canvas = await createOffscreenCanvas(config.image);
       return {
         source: config.image,
-        chunks: canvas.aggregateChunksAspectRatioFlat(config.detail, "avg", "luminance"),
+        chunks: canvas.aggregateChunksAspectRatioFlat(config.detail, "median", "luminance"),
         detail: config.detail,
         canvas,
       };

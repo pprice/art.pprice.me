@@ -57,7 +57,9 @@ const Aggregators: { [K in AggregateOperation]: (values: number[]) => number } =
   },
 };
 
-const ValueAccessors: { [K in AggregateValue]: (c: RGBA) => number } = {
+type RGBAToFloat = (c: RGBA) => number;
+
+const ValueAccessors: { [K in AggregateValue]: RGBAToFloat } = {
   hue: (c) => rgb2hsl(c)[0],
   saturation: (c) => rgb2hsl(c)[1],
   lightness: (c) => rgb2hsl(c)[2],
@@ -93,7 +95,7 @@ export class OffscreenCanvasContext {
 
   getColor(x: number, y: number): RGBA {
     const raw = this.getImageData(x, y, 1, 1);
-    return [raw.getUint8(0), raw.getUint8(1), raw.getUint8(2), raw.getUint8(3)];
+    return new Uint8ClampedArray(raw.buffer.slice(0, 4));
   }
 
   getChunkFlat(x: number, y: number, w: number, h: number): RGBA[] {
@@ -102,7 +104,7 @@ export class OffscreenCanvasContext {
 
     const res: RGBA[] = [];
     for (let i = 0; i < dv.byteLength; i += 4) {
-      res.push([dv.getUint8(i), dv.getUint8(i + 1), dv.getUint8(i + 2), dv.getUint8(i + 3)]);
+      res.push(new Uint8ClampedArray(dv.buffer, i, 4));
     }
 
     return res;
@@ -134,16 +136,44 @@ export class OffscreenCanvasContext {
       }
     }
 
-    const flat = res.map((chunk) => this.aggregateChunk(chunk[0], chunk[1], chunk[2], chunk[3], agg, val));
+    const cacheContext = new Map<number, number>();
+    const flat = res.map((chunk) =>
+      this.aggregateChunk(chunk[0], chunk[1], chunk[2], chunk[3], agg, val, cacheContext)
+    );
 
     return flat;
   }
 
-  aggregateChunk(x: number, y: number, w: number, h: number, agg: AggregateOperation, val: AggregateValue) {
+  aggregateChunk(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    agg: AggregateOperation,
+    val: AggregateValue,
+    cacheContext?: Map<number, number>
+  ) {
     const chunk = this.getChunkFlat(x, y, w, h);
-    const accessor = ValueAccessors[val];
+    const accessor = this.cachedValueAccessor(ValueAccessors[val], cacheContext);
     const mapped = chunk.map((c) => accessor(c));
     return Aggregators[agg](mapped);
+  }
+
+  private cachedValueAccessor(func: RGBAToFloat, cache?: Map<number, number>): RGBAToFloat {
+    cache = cache || new Map<number, number>();
+
+    return (v: RGBA): number => {
+      const k = new Uint32Array(v.buffer)[0];
+      let c = cache.get(k);
+
+      if (c !== undefined) {
+        return c;
+      }
+
+      c = func(v);
+      cache.set(k, c);
+      return c;
+    };
   }
 
   private imageDataCache:
