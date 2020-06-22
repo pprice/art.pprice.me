@@ -15,6 +15,13 @@ export const PLACES: ImageSource[] = [
   },
 ];
 
+export const PAINTINGS: ImageSource[] = [
+  {
+    name: "Van Gogh 1",
+    source: "/images/van-gogh1.jpg",
+  },
+];
+
 export const PEOPLE: ImageSource[] = [
   {
     name: "Boris",
@@ -22,4 +29,4 @@ export const PEOPLE: ImageSource[] = [
   },
 ];
 
-export const DEFAULT_PREDEFINED_IMAGES = [...PEOPLE, ...PLACES];
+export const DEFAULT_PREDEFINED_IMAGES = [...PEOPLE, ...PLACES, ...PAINTINGS];

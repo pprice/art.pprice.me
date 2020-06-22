@@ -44,7 +44,6 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
   path: "processing/dots",
   description: "Generates an output grid based off of input image median luminance",
   initialProps: {
-    orientation: "portrait",
     containerStrokeWidth: 0,
   },
   setup: (config, prior) => {

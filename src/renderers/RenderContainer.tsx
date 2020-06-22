@@ -59,11 +59,13 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   ...props
 }) => {
   const renderRef = useRef<RenderRef>();
-  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
 
   const [configPanelOpen, setConfigPanelOpen] = useState(false);
   const [seed, setSeed] = useState(initialSeed || "");
-  const [orientation, setOrientation] = useState<"landscape" | "portrait">(() => initialOrientation || "landscape");
+  const [orientation, setOrientation] = useState<"landscape" | "portrait">(
+    () => initialOrientation || (isDesktop ? "landscape" : "portrait")
+  );
   const [blendMode, setBlendMode] = useState<BlendMode>(initialBlendMode || "multiply");
 
   const [size, setSize] = useState<PaperSizes>(initialSize || "Bristol9x12");

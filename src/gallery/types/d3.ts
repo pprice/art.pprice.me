@@ -23,6 +23,7 @@ export type SetupFunc<TConfig, TSetupResult extends object> = (
 type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends object = undefined> = {
   initialProps?: Partial<InitialProps>;
   config: TConfig;
+  presents?: { [key: string]: RuntimeRenderConfiguration<TConfig> }[];
   path?: string;
   description?: string;
   supportsRandom?: boolean;

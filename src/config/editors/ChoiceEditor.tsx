@@ -13,7 +13,6 @@ export const ChoiceEditor: PropertyEditorComponent<ChoiceProperty> = ({
 
   const handleUpdate = useCallback(
     (newValue: string) => {
-      console.log(newValue);
       onUpdated(propertyKey, value, newValue);
       setValue(newValue);
     },
