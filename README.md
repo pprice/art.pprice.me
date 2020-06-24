@@ -10,6 +10,16 @@ This repository contains the sources to [art.pprice.me](https://art.pprice.me/).
 - Reduce the amount of boiler-plate code and setup required for plotting (paper sizes, alignment, layers)
 - Enable live previews while hacking
 
+## Future improvements
+
+- Polyfill for `OffscreenCanvas`
+- Develop a homepage with previews of each art-work (build step?)
+- Move canvas interactions to web-workers, these have a tendency to be computationally expensive and will hang the UI thread
+- Support multiple single pass aggregations against image data (e.g. luminance AND hue in a single pass)
+- Refactor `<RenderContainer />` into smaller components, its too big!
+- Add support for [Hershey Text](https://wiki.evilmadscientist.com/Hershey_Text) svg fonts
+- Transition between configuration states instead of clear and redraw (current approach)
+
 ## Installation
 
 This repository uses `yarn` (classic) for package management, if you do not have it installed, follow instructions at [yarnpkg.com](https://classic.yarnpkg.com/lang/en/).
