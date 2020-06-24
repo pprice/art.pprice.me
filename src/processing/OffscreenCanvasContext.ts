@@ -1,5 +1,3 @@
-// import * as chroma from "chroma-js";
-
 import { rgb2Luminance, RGBA, rgb2hsl } from "./Color";
 
 export async function createOffscreenCanvas(source: string) {
