@@ -67,7 +67,7 @@ export class DomImageDataCanvas implements ImageDataCanvas {
 
   destroy(): void {
     if (this.canvas) {
-      document.removeChild(this.canvas);
+      this.canvas.parentElement?.removeChild(this.canvas);
     }
 
     this.canvas = undefined;
