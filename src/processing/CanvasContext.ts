@@ -1,43 +1,26 @@
 import { rgb2Luminance, RGBA, rgb2hsl } from "./Color";
+import { OffscreenImageDataCanvas, DomImageDataCanvas, ImageDataCanvas } from "./Canvas";
+import { domLoadImageAsync } from "./Image";
 
-export async function createOffscreenCanvas(source: string) {
-  const image = await loadImageAsync(source);
+export async function createCanvas(source: string): Promise<CanvasContext | undefined> {
+  if (process.browser) {
+    const image = await domLoadImageAsync(source);
+    let canvas: ImageDataCanvas;
 
-  const canvas = new OffscreenCanvas(image.width, image.height);
-  const context = canvas.getContext("2d");
-  context.drawImage(image, 0, 0);
+    if (OffscreenImageDataCanvas.supported()) {
+      canvas = new OffscreenImageDataCanvas(image);
+    } else {
+      canvas = new DomImageDataCanvas(image);
+    }
 
-  return new OffscreenCanvasContext(canvas, context);
-}
+    return new CanvasContext(canvas);
+  }
 
-export function loadImageAsync(source: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    let image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = (e) => reject(e);
-    image.crossOrigin = "Anonymous";
-    image.src = source;
-  });
+  return undefined;
 }
 
 type AggregateOperation = "avg" | "median" | "min" | "max";
 type AggregateValue = "luminance" | "hue" | "saturation" | "lightness";
-
-function chunkArray<T>(arr: T[], w: number): T[][] {
-  const result: T[][] = [[]];
-  let current = result[0];
-
-  for (let i = 0; i < arr.length; i++) {
-    if (current.length == w) {
-      current = [];
-      result.push(current);
-    }
-
-    current.push(arr[i]);
-  }
-
-  return result;
-}
 
 const Aggregators: { [K in AggregateOperation]: (values: number[]) => number } = {
   avg: (values) => values.reduce((sum, i) => sum + i || 0, 0) / values.length,
@@ -64,8 +47,8 @@ const ValueAccessors: { [K in AggregateValue]: RGBAToFloat } = {
   luminance: (c) => rgb2Luminance(c),
 };
 
-export class OffscreenCanvasContext {
-  constructor(public canvas: OffscreenCanvas, public context: OffscreenCanvasRenderingContext2D) {}
+export class CanvasContext {
+  constructor(public canvas: ImageDataCanvas) {}
 
   get width(): number {
     return this.canvas.width;
@@ -184,12 +167,12 @@ export class OffscreenCanvasContext {
 
   private getImageData(x: number, y: number, w: number, h: number): DataView {
     if (!this.imageDataCache) {
-      const iData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      const iData = this.canvas.getImageData();
 
       this.imageDataCache = {
-        data: new Uint32Array(iData.data.buffer),
-        width: iData.width,
-        height: iData.height,
+        data: new Uint32Array(iData.buffer),
+        width: this.canvas.width,
+        height: this.canvas.height,
       };
     }
 

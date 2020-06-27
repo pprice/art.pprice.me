@@ -1,6 +1,6 @@
 import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
-import { OffscreenCanvasContext, createOffscreenCanvas } from "src/processing/OffscreenCanvasContext";
+import { CanvasContext, createCanvas } from "src/processing/CanvasContext";
 import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
 import { hatch45 } from "src/geom/hatch";
 import { scale } from "src/geom/math";
@@ -49,7 +49,7 @@ const config = makeRenderConfig({
 });
 
 type SetupContext = {
-  canvas: OffscreenCanvasContext;
+  canvas: CanvasContext;
   source: string;
   detail: number;
   luminance: number[];
@@ -84,7 +84,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     }
 
     return async () => {
-      const canvas = await createOffscreenCanvas(config.image);
+      const canvas = await createCanvas(config.image);
       return {
         source: config.image,
         luminance: canvas.aggregateChunksAspectRatioFlat(config.detail, "median", "luminance"),
