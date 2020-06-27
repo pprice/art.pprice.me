@@ -68,6 +68,8 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
       return undefined;
     }
 
+    prior?.canvas?.destroy();
+
     return async () => {
       const canvas = await createCanvas(config.image);
       return {

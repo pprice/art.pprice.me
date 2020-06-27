@@ -74,6 +74,12 @@ export class CanvasContext {
     return [this.width / 2, this.height / 2];
   }
 
+  destroy() {
+    this.imageDataCache = undefined;
+    this.canvas?.destroy();
+    this.canvas = undefined;
+  }
+
   getColor(x: number, y: number): RGBA {
     const raw = this.getImageData(x, y, 1, 1);
     return new Uint8ClampedArray(raw.buffer.slice(0, 4));
