@@ -1,7 +1,8 @@
+import "../src/wdyr";
 import React, { useEffect, FunctionComponent } from "react";
 import clsx from "clsx";
 import Head from "next/head";
-import App, { AppProps } from "next/app";
+import { AppProps } from "next/app";
 
 import { createStyles, Theme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Drawer, List, IconButton, CssBaseline, Divider } from "@material-ui/core";

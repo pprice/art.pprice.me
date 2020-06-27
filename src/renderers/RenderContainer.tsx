@@ -20,9 +20,7 @@ import ArrowDownloadIcon from "@material-ui/icons/ArrowDownward";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import AspectRatioIcon from "@material-ui/icons/AspectRatio";
 import RotateRightIcon from "@material-ui/icons/RotateRight";
-import SettingsIcon from "@material-ui/icons/Settings";
 import ColorizeIcon from "@material-ui/icons/Colorize";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
 
 import { RenderFrameProps, RenderRef } from "./props";
 import { PaperSizes, BLEND_MODES, BlendMode } from "../const";
@@ -33,6 +31,7 @@ import { useDebounce } from "../hooks/UseDebounce";
 import { PartialBy } from "@/utils";
 import theme from "@/components/Theme";
 import { SetupFunc } from "@/gallery/types/d3";
+import { RenderHeader } from "./RenderHeader";
 
 type PartialRenderFrameProps = "seed" | "orientation" | "size" | "blendMode" | "margin";
 
@@ -73,10 +72,8 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const debouncedSeed = useDebounce(seed, 250);
 
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
-  const [activeConfig, setActiveConfig] = useState<any>();
+  const [activeSetupAndConfig, setActiveSetupAndConfig] = useState<{ config: any; setup?: any }>(undefined);
   const [pendingConfig, setPendingConfig] = useState<any>(initialConfig);
-  const [activeSetup, setActiveSetup] = useState<any>(undefined);
-  const [inSetup, setInSetup] = useState(true);
 
   const onConfigUpdated = (updated) => {
     setPendingConfig(updated);
@@ -86,35 +83,34 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
     if (!pendingConfig) {
       return;
     } else if (!onSetup) {
-      setInSetup(false);
-      setActiveConfig(pendingConfig);
+      setActiveSetupAndConfig({ config: pendingConfig });
       return;
     }
 
-    const setupProducer = onSetup(pendingConfig, activeSetup);
+    const setupProducer = onSetup(pendingConfig, activeSetupAndConfig?.setup);
 
     if (!setupProducer) {
-      setActiveConfig(pendingConfig);
+      setActiveSetupAndConfig({ config: pendingConfig, setup: activeSetupAndConfig?.setup });
       return;
     }
 
-    setInSetup(true);
-
-    setTimeout(() => {
+    // NOTE: It is important that the update to setup and config is atomic as there
+    // is a dependency between the two in most cases
+    const handle = setTimeout(() => {
       setupProducer(() => {})
-        .then((res) => setActiveSetup(res))
-        .finally(() => {
-          setInSetup(false);
-
-          if (pendingConfig !== activeConfig) {
-            setActiveConfig(pendingConfig);
-          }
+        .then((res) => {
+          setActiveSetupAndConfig({ config: pendingConfig, setup: res });
+        })
+        .catch(() => {
+          setActiveSetupAndConfig({ config: pendingConfig });
         });
     }, 200);
+
+    return () => clearTimeout(handle);
   }, [onSetup, pendingConfig]);
 
-  const configPanelVisible = useMemo(() => activeConfig != undefined && configPanelOpen, [
-    activeConfig,
+  const configPanelVisible = useMemo(() => activeSetupAndConfig != undefined && configPanelOpen, [
+    activeSetupAndConfig,
     configPanelOpen,
   ]);
 
@@ -125,7 +121,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         .toUpperCase()
     );
 
-  if (!activeConfig || (onSetup && !activeSetup)) {
+  if (!activeSetupAndConfig || (onSetup && !activeSetupAndConfig?.setup)) {
     return (
       <Box display="flex" alignItems="center" flexDirection="column">
         <CircularProgress />
@@ -136,25 +132,12 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   return (
     <div style={{ width: "100%" }}>
-      <Box display="flex" marginBottom={2} flexDirection="row" alignItems="center" flexWrap="wrap">
-        <Box marginRight={2} alignItems="center" display="flex">
-          <Typography variant="h5">{title}</Typography>
-          {description && (
-            <Box marginLeft={1} alignItems="center" marginBottom={-0.5}>
-              <Tooltip title={<Typography>{description}</Typography>}>
-                <InfoIcon opacity={0.7} />
-              </Tooltip>
-            </Box>
-          )}
-        </Box>
-
-        {activeConfig && (
-          <Box marginLeft="auto" alignItems="center" display="flex">
-            <SettingsIcon />
-            <Switch size="small" value={configPanelOpen} onChange={(e, checked) => setConfigPanelOpen(checked)} />
-          </Box>
-        )}
-      </Box>
+      <RenderHeader
+        title={title}
+        description={description}
+        hasSettings={!!activeSetupAndConfig?.config}
+        onToggleSettings={(v) => setConfigPanelOpen(v)}
+      />
       <Box display="flex" flexDirection={isDesktop ? "row" : "column"}>
         <Box flexGrow={1}>
           <RenderFrame
@@ -164,8 +147,8 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             ref={renderRef}
             seed={debouncedSeed}
             blendMode={blendMode}
-            setupResult={activeSetup}
-            config={activeConfig}
+            setupResult={activeSetupAndConfig?.setup}
+            config={activeSetupAndConfig?.config}
           />
         </Box>
 
@@ -241,7 +224,11 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
                   <Box marginLeft={isDesktop ? 2 : 0}>
                     <Divider />
                   </Box>
-                  <ConfigEditor config={config} activeConfig={activeConfig} onConfigUpdated={onConfigUpdated} />
+                  <ConfigEditor
+                    config={config}
+                    activeConfig={activeSetupAndConfig?.config}
+                    onConfigUpdated={onConfigUpdated}
+                  />
                   <Box marginLeft={isDesktop ? 2 : 0} marginTop={1}>
                     <Divider />
                   </Box>

@@ -1029,6 +1029,12 @@
   resolved "https://registry.yarnpkg.com/@next/react-refresh-utils/-/react-refresh-utils-9.4.2.tgz#a94c793b8442bcad29d4413740955dca5d7c555d"
   integrity sha512-N2bn3fU+N26Pkf+c7ZaG04T9FrDUeGtIBaJ/NGygm9GMrIkCU/6nkeWNboaAiHvji8UooqhLf1Yesf4BJLzHOA==
 
+"@types/@welldone-software/why-did-you-render":
+  version "4.2.5"
+  resolved "https://codeload.github.com/welldone-software/why-did-you-render/tar.gz/08594fdf537343ff8ec478d1d46f21162a22ab30"
+  dependencies:
+    lodash "^4"
+
 "@types/chroma-js@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/chroma-js/-/chroma-js-2.0.0.tgz#b0fc98c8625d963f14e8138e0a7961103303ab22"
@@ -1473,6 +1479,13 @@
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
+
+"@welldone-software/why-did-you-render@^4.2.5":
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-4.2.5.tgz#005d06958d0c8a1ab3b92a3f4cfe3507b1806976"
+  integrity sha512-Uq4Gmi14bHDfWPGu1EuZKkdxlihXIyyfhAoP0nkA3qHTu8yit0iL1KO6Ldyno55otnjL3GHUY/MswMVvB5Ro8g==
+  dependencies:
+    lodash "^4"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -4047,7 +4060,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.17.11, lodash@^4.17.13:
+lodash@^4, lodash@^4.17.11, lodash@^4.17.13:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==

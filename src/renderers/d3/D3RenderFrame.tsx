@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import { useMemo, useRef, memo, useEffect, forwardRef, useImperativeHandle } from "react";
 import * as d3 from "d3";
 
 import { Sizes, CanvasSize, createCanvasSize, inchesToPixels } from "@/const/sizes";
@@ -12,114 +12,117 @@ export type D3RenderFrameProps<TDatum> = BaseRenderFrameProps & {
   onRender: (selection: D3Selection<BaseType, TDatum>, context: D3RenderContext<any, any>) => Promise<void> | void;
 };
 
-export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>(
-  ({ margin = 1, seed, size, orientation, onRender, attribution, config, blendMode, ...props }, ref) => {
-    const svgSize = useMemo(() => {
-      const factory = Sizes[size];
-      if (!factory) {
-        console.warn(`Unknown size ${size}`);
-        return undefined;
-      }
-      return factory()[orientation];
-    }, [size, orientation]);
-    const svgRef = useRef();
+export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((props, ref) => {
+  const svgSize = useMemo(() => {
+    const factory = Sizes[props.size];
+    if (!factory) {
+      console.warn(`Unknown size ${props.size}`);
+      return undefined;
+    }
+    return factory()[props.orientation];
+  }, [props.size, props.orientation]);
 
-    // Forward ref implementation
-    useImperativeHandle(ref, () => ({
-      serialize() {
-        return svgSerializer(svgRef.current, svgSize);
-      },
-    }));
+  const svgRef = useRef();
 
-    const [inRender, setInRender] = useState(false);
-    const currentRender = useRef<Promise<void> | undefined>();
+  // Forward ref implementation
+  useImperativeHandle(ref, () => ({
+    serialize() {
+      return svgSerializer(svgRef.current, svgSize);
+    },
+  }));
 
-    const [margins, marginsPixels] = useMemo(() => {
-      const margins: number[] | undefined = Array.isArray(margin)
-        ? margin
-        : margin
-        ? [margin, margin, margin, margin]
-        : undefined;
+  const currentRender = useRef<Promise<void> | undefined>();
 
-      const marginsPixels: number[] | undefined = margins && margins.map((v) => inchesToPixels(v));
-
-      return [margins, marginsPixels];
-    }, [margin]);
-
-    useEffect(() => {
-      setInRender(true);
-      const root = d3.select(svgRef.current);
-
-      if (!svgSize) {
-        return;
-      }
-
-      // Calculate drawing area
-      let drawingDimensions = [...svgSize.inches];
-
-      if (margins) {
-        drawingDimensions[0] = drawingDimensions[0] - margins[0] - margins[2];
-        drawingDimensions[1] = drawingDimensions[1] - margins[1] - margins[3];
-      }
-
-      const drawingCanvas: CanvasSize = createCanvasSize(drawingDimensions[0], drawingDimensions[1]);
-
-      // TODO: Move to memo
-      const context = new D3RenderContext(svgSize, drawingCanvas, seed, blendMode, config, props.setupResult);
-      const drawLayer = context.layer(root, "draw");
-      const attributionLayer = context.layer(root, "attribution");
-      const overlayLayer = context.layer(root, "overlay");
-
-      // Overlay (bounding margins, etc)
-      if (margins) {
-        drawLayer.attr("transform", `translate(${marginsPixels[0]}, ${marginsPixels[1]})`);
-      }
-
-      if (margins && props.containerStroke && props.containerStrokeWidth) {
-        drawContainer(overlayLayer, marginsPixels, drawingCanvas, props);
-      }
-
-      // Draw attribution
-      if (attribution) {
-        drawAttribution(attribution, seed, attributionLayer, marginsPixels, drawingCanvas);
-      }
-
-      // Draw Actual Render
-      const render = async () => {
-        await currentRender?.current;
-        setInRender(true);
-        currentRender.current = onRender(drawLayer, context) || undefined;
-        await currentRender.current;
-        setInRender(false);
-      };
-
-      render();
-    }, [svgRef.current, onRender, seed, margins, attribution, svgSize, blendMode, config, props.setupResult]);
+  useEffect(() => {
+    const root = d3.select(svgRef.current);
 
     if (!svgSize) {
-      return null;
+      return;
     }
 
-    return (
-      <div>
-        <svg
-          viewBox={svgSize.viewBox}
-          preserveAspectRatio="xMidYMid meet"
-          width="100%"
-          ref={svgRef}
-          style={{ background: "white", margin: 0, padding: 0, border: "1px solid #BBB" }}
-        >
-          <g id="debug"></g>
-        </svg>
-      </div>
-    );
-  }
-);
+    const margins: number[] | undefined = Array.isArray(props.margin)
+      ? props.margin
+      : props.margin
+      ? [props.margin, props.margin, props.margin, props.margin]
+      : [1, 1, 1, 1];
 
-D3RenderFrame.defaultProps = {
-  containerStroke: "black",
-  containerStrokeWidth: 1,
-};
+    // Calculate drawing area
+    let drawingDimensions = [...svgSize.inches];
+
+    if (margins) {
+      drawingDimensions[0] = drawingDimensions[0] - margins[0] - margins[2];
+      drawingDimensions[1] = drawingDimensions[1] - margins[1] - margins[3];
+    }
+
+    const drawingCanvas: CanvasSize = createCanvasSize(drawingDimensions[0], drawingDimensions[1]);
+
+    // TODO: Move to memo
+    const context = new D3RenderContext(
+      svgSize,
+      drawingCanvas,
+      props.seed,
+      props.blendMode,
+      props.config,
+      props.setupResult
+    );
+    const drawLayer = context.layer(root, "draw");
+    const attributionLayer = context.layer(root, "attribution");
+    const overlayLayer = context.layer(root, "overlay");
+
+    const marginsPixels = margins.map((v) => inchesToPixels(v));
+
+    // Overlay (bounding margins, etc)
+    if (margins) {
+      drawLayer.attr("transform", `translate(${marginsPixels[0]}, ${marginsPixels[1]})`);
+    }
+
+    if (margins && props.containerStroke && props.containerStrokeWidth) {
+      drawContainer(overlayLayer, marginsPixels, drawingCanvas, props);
+    }
+
+    // Draw attribution
+    if (props.attribution) {
+      drawAttribution(props.attribution, props.seed, attributionLayer, marginsPixels, drawingCanvas);
+    }
+
+    // Draw Actual Render
+    const render = async () => {
+      await currentRender?.current;
+      currentRender.current = props.onRender(drawLayer, context) || undefined;
+      await currentRender.current;
+    };
+
+    render();
+  }, [
+    svgRef.current,
+    svgSize,
+    props.onRender,
+    props.margin,
+    props.seed,
+    props.attribution,
+    props.blendMode,
+    props.config,
+    props.setupResult,
+  ]);
+
+  if (!svgSize) {
+    return null;
+  }
+
+  return (
+    <div>
+      <svg
+        viewBox={svgSize.viewBox}
+        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        ref={svgRef}
+        style={{ background: "white", margin: 0, padding: 0, border: "1px solid #BBB" }}
+      >
+        <g id="debug"></g>
+      </svg>
+    </div>
+  );
+});
 
 function drawContainer(layer: D3Selection<any>, marginsPixels: number[], drawingCanvas: CanvasSize, props) {
   layer

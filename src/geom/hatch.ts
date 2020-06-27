@@ -10,6 +10,10 @@ export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean =
   w += x;
   h += y;
 
+  if (Number.isNaN(interval) || !Number.isFinite(interval)) {
+    throw new Error(`Invalid interval ${interval} specified`);
+  }
+
   const result: Line[] = [];
 
   // Create diagonal lines within rect
@@ -44,7 +48,9 @@ export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean =
         ey = h;
       }
 
-      if (ex >= sx) break;
+      if (ex >= sx) {
+        break;
+      }
     }
   }
 

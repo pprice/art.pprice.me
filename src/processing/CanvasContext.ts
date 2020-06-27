@@ -48,7 +48,11 @@ const ValueAccessors: { [K in AggregateValue]: RGBAToFloat } = {
 };
 
 export class CanvasContext {
-  constructor(public canvas: ImageDataCanvas) {}
+  constructor(public canvas: ImageDataCanvas) {
+    if (!canvas) {
+      throw new Error("Canvas must be specified");
+    }
+  }
 
   get width(): number {
     return this.canvas.width;

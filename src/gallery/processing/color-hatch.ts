@@ -111,6 +111,11 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     const boxSize = ctx.centerFitRect(ctx.setup.canvas.size);
     const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize[2], boxSize[3]);
 
+    if (segments.length != ctx.setup.luminance.length) {
+      console.error("Out of sync");
+      return;
+    }
+
     const zip = segments.map((s, i) => ({
       rect: s,
       l: ctx.setup.luminance[i],
@@ -123,13 +128,14 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 
     for (let p of zip) {
-      if (p.l > ctx.config.high_threshold) {
+      if (Number.isNaN(p.l) || p.l == undefined || p.l > ctx.config.high_threshold) {
         continue;
       }
 
-      const hatchFactor = Math.floor(scale(p.l, 0, 1, strength[1], strength[0]));
+      const hatchFactor = scale(p.l, 0, 1, strength[1], strength[0]);
+      const hatchFactorFloored = Math.floor(hatchFactor);
 
-      const hatch = flipAlternate(translateLines(hatch45(p.rect, hatchFactor), boxSize)).flat();
+      const hatch = flipAlternate(translateLines(hatch45(p.rect, hatchFactorFloored), boxSize)).flat();
       //const hatchR = flipAlternate(translateLines(hatch45(p.rect, hatchFactor, true), boxSize)).flat();
 
       const layer = p.s > 0.2 && p.l < 0.8 ? pickLayerForHue(p.h) : o;
