@@ -41,7 +41,7 @@ export type D3Artwork<
   render: (
     selection: D3Selection<TBaseType, TDatum>,
     context: D3RenderContext<RuntimeRenderConfiguration<TConfig>, TSetupResult>
-  ) => Promise<void> | void;
+  ) => void;
 };
 
 export type Artwork<TConfig extends RenderConfiguration, TSetupResult extends object> = D3Artwork<

@@ -31,8 +31,6 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((pro
     },
   }));
 
-  const currentRender = useRef<Promise<void> | undefined>();
-
   useEffect(() => {
     const root = d3.select(svgRef.current);
 
@@ -86,13 +84,7 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((pro
     }
 
     // Draw Actual Render
-    const render = async () => {
-      await currentRender?.current;
-      currentRender.current = props.onRender(drawLayer, context) || undefined;
-      await currentRender.current;
-    };
-
-    render();
+    props.onRender(drawLayer, context);
   }, [
     svgRef.current,
     svgSize,
