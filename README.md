@@ -12,7 +12,7 @@ This repository contains the sources to [art.pprice.me](https://art.pprice.me/).
 
 ## Future improvements
 
-- Polyfill for `OffscreenCanvas`
+- Support server side rendering of canvases
 - Develop a homepage with previews of each art-work (build step?)
 - Move canvas interactions to web-workers, these have a tendency to be computationally expensive and will hang the UI thread
 - Support multiple single pass aggregations against image data (e.g. luminance AND hue in a single pass)
