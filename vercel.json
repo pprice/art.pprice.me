@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/render/[...slug.ts]": {
+    "pages/api/render/[...slug.ts]": {
       "includeFiles": "public/**/*.jpg"
     }
   }
