@@ -5,10 +5,22 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 
 import { createStyles, Theme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography, Drawer, List, IconButton, CssBaseline, Divider } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  IconButton,
+  CssBaseline,
+  Divider,
+  Button,
+  Box,
+  Link,
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import GitHubIcon from "@material-ui/icons/GitHub";
 
 import theme from "@/components/Theme";
 
@@ -31,6 +43,13 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
     }
   }, []);
 
+  /**
+   * background: #649F39;
+background: -webkit-radial-gradient(top left, #649F39, #24D7E3);
+background: -moz-radial-gradient(top left, #649F39, #24D7E3);
+background: radial-gradient(to bottom right, #649F39, #24D7E3);
+   */
+
   const drawerWidth = 250;
 
   const useStyles = makeStyles((theme: Theme) =>
@@ -39,6 +58,9 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
         display: "flex",
       },
       appBar: {
+        backgroundImage:
+          "linear-gradient(45deg, #f0f0f0 8.33%, #e2e8eb 8.33%, #e2e8eb 50%, #f0f0f0 50%, #f0f0f0 58.33%, #e2e8eb 58.33%, #e2e8eb 100%)",
+        backgroundSize: "9px 9px",
         transition: theme.transitions.create(["margin", "width"], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.leavingScreen,
@@ -114,6 +136,7 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
         <div className={classes.root}>
           <CssBaseline />
           <AppBar
+            color="secondary"
             position="fixed"
             className={clsx(classes.appBar, {
               [classes.appBarShift]: open,
@@ -130,10 +153,18 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
                 <MenuIcon />
               </IconButton>
               {!open && (
-                <Typography variant="h6" noWrap>
-                  art.pprice.me
-                </Typography>
+                <Link href="/" color="textPrimary">
+                  <Typography variant="h5" noWrap>
+                    art.pprice.me
+                  </Typography>
+                </Link>
               )}
+
+              <Box flexGrow={1}></Box>
+
+              <Button startIcon={<GitHubIcon />} href="https://github.com/pprice/art.pprice.me/">
+                Github
+              </Button>
             </Toolbar>
           </AppBar>
           <Drawer

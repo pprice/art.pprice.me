@@ -138,7 +138,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         onToggleSettings={(v) => setConfigPanelOpen(v)}
       />
       <Box display="flex" flexDirection={isDesktop ? "row" : "column"}>
-        <Box flexGrow={1}>
+        <Box flexGrow={1} border={1} borderColor="#EEEEEE" bgcolor="white">
           <RenderFrame
             {...props}
             size={size}

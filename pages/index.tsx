@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { getGalleryIndex } from "@/gallery";
-import { Box, GridList, GridListTile, useMediaQuery } from "@material-ui/core";
+import { Box, GridList, GridListTile, useMediaQuery, Link } from "@material-ui/core";
 import theme from "@/components/Theme";
 
 function Home() {
@@ -9,11 +9,13 @@ function Home() {
 
   return (
     <Box>
-      <GridList cellHeight={300} cols={isDesktop ? 2 : 1}>
+      <GridList cellHeight={300} cols={isDesktop ? 3 : 1} spacing={10}>
         {items.map((p) => (
           <GridListTile key={p.name} color="white">
             <a href={p.url}>
-              <img src={p.img} />
+              <Box display="flex" border={1} color="#EEEEEE" height={290} overflow="hidden">
+                <img src={p.img} width="100%" />
+              </Box>
             </a>
           </GridListTile>
         ))}
