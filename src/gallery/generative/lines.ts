@@ -26,6 +26,10 @@ const Lines: D3Artwork<typeof config> = {
   path: "generative/lines",
   supportsRandom: true,
   config,
+  initialProps: {
+    containerStrokeWidth: 1,
+    containerStroke: "black",
+  },
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
     var lineFunction = d3.line<number[]>().curve(d3.curveBundle);
