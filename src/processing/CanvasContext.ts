@@ -5,6 +5,8 @@ import { domLoadImageAsync } from "./Image";
 export async function createCanvas(source: string, ctx?: { baseUrl: string }): Promise<CanvasContext | undefined> {
   if (process.browser) {
     const image = await domLoadImageAsync(source);
+
+    console.log("HAVE IMAGE");
     let canvas: ImageDataCanvas;
 
     if (OffscreenImageDataCanvas.supported()) {

@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent } from "react";
-import { Typography, Box, Tooltip, Switch, makeStyles, Theme, createStyles } from "@material-ui/core";
+import { Typography, Box, Tooltip, Switch } from "@material-ui/core";
 
 import SettingsIcon from "@material-ui/icons/Settings";
 import InfoIcon from "@material-ui/icons/InfoOutlined";

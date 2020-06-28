@@ -3,7 +3,7 @@ export function domLoadImageAsync(source: string): Promise<HTMLImageElement> {
     let image = new Image();
     image.onload = () => resolve(image);
     image.onerror = (e) => reject(e);
-    image.crossOrigin = "Anonymous";
+    image.crossOrigin = undefined; // "anonymous";
     image.src = source;
   });
 }
