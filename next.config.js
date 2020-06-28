@@ -9,7 +9,7 @@ module.exports = {
     }
 
     config.externals.push({
-      canvas: "commonjs canvas",
+      canvas: {}, // "commonjs canvas",
     });
 
     console.dir(config);
