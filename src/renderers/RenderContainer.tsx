@@ -7,7 +7,6 @@ import {
   IconButton,
   Select,
   MenuItem,
-  Switch,
   Zoom,
   Tooltip,
   useMediaQuery,

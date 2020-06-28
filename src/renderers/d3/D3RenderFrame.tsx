@@ -7,9 +7,22 @@ import { BaseRenderFrameProps, RenderRef } from "../props";
 import { D3RenderContext, D3Selection } from "./D3RenderContext";
 import { BaseType } from "d3";
 
+const useSSREffect = (effect: React.EffectCallback, deps?: React.DependencyList) => {
+  if (process.browser) {
+    return useEffect(effect, deps);
+  }
+
+  // Run now
+  const destroy = effect();
+  if (destroy) {
+    destroy();
+  }
+};
+
 export type D3RenderFrameProps<TDatum> = BaseRenderFrameProps & {
   type: "d3";
   onRender: (selection: D3Selection<BaseType, TDatum>, context: D3RenderContext<any, any>) => Promise<void> | void;
+  svgDom?: any;
 };
 
 export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((props, ref) => {
@@ -31,12 +44,14 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((pro
     },
   }));
 
-  useEffect(() => {
-    const root = d3.select(svgRef.current);
+  useSSREffect(() => {
+    const domElement = svgRef.current || props.svgDom;
 
-    if (!svgSize) {
+    if (!domElement || !svgSize) {
       return;
     }
+
+    const root = d3.select(domElement);
 
     const margins: number[] | undefined = Array.isArray(props.margin)
       ? props.margin
@@ -102,17 +117,13 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((pro
   }
 
   return (
-    <div>
-      <svg
-        viewBox={svgSize.viewBox}
-        preserveAspectRatio="xMidYMid meet"
-        width="100%"
-        ref={svgRef}
-        style={{ background: "white", margin: 0, padding: 0, border: "1px solid #BBB" }}
-      >
-        <g id="debug"></g>
-      </svg>
-    </div>
+    <svg
+      viewBox={svgSize.viewBox}
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      ref={svgRef}
+      style={{ background: "white", margin: 0, padding: 0 }}
+    ></svg>
   );
 });
 

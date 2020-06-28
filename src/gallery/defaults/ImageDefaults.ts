@@ -29,4 +29,4 @@ export const PEOPLE: ImageSource[] = [
   },
 ];
 
-export const DEFAULT_PREDEFINED_IMAGES = [...PEOPLE, ...PLACES, ...PAINTINGS];
+export const DEFAULT_PREDEFINED_IMAGES = [...PLACES, ...PAINTINGS, ...PEOPLE];

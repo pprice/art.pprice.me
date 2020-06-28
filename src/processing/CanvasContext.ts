@@ -1,5 +1,5 @@
 import { rgb2Luminance, RGBA, rgb2hsl } from "./Color";
-import { OffscreenImageDataCanvas, DomImageDataCanvas, ImageDataCanvas } from "./Canvas";
+import { OffscreenImageDataCanvas, DomImageDataCanvas, ImageDataCanvas, ServerSideCanvas } from "./Canvas";
 import { domLoadImageAsync } from "./Image";
 
 export async function createCanvas(source: string): Promise<CanvasContext | undefined> {
@@ -16,7 +16,9 @@ export async function createCanvas(source: string): Promise<CanvasContext | unde
     return new CanvasContext(canvas);
   }
 
-  return undefined;
+  const serverSideLoader = new ServerSideCanvas(source);
+  await serverSideLoader.init();
+  return new CanvasContext(serverSideLoader);
 }
 
 type AggregateOperation = "avg" | "median" | "min" | "max";

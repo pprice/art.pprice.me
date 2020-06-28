@@ -1,4 +1,5 @@
-import { thresholdScott } from "d3";
+import Jimp from "jimp/es";
+import { join as pathJoin } from "path";
 
 /**
  * Abstract canvas implementation; to support server side rendering
@@ -72,5 +73,39 @@ export class DomImageDataCanvas implements ImageDataCanvas {
 
     this.canvas = undefined;
     this.context = undefined;
+  }
+}
+
+export class ServerSideCanvas implements ImageDataCanvas {
+  private bitmap: Buffer | undefined;
+
+  public width: number;
+  public height: number;
+
+  constructor(private source: string) {}
+
+  async init() {
+    if (this.source.startsWith("/")) {
+      this.source = this.source.substring(1);
+    }
+
+    const resolvedSource = this.source.startsWith("http")
+      ? this.source
+      : pathJoin(process.cwd(), "public", this.source);
+
+    const image = await Jimp.read(resolvedSource);
+    const bitmap = image.bitmap;
+
+    this.width = bitmap.width;
+    this.height = bitmap.height;
+    this.bitmap = bitmap.data;
+  }
+
+  getImageData(): Uint8ClampedArray {
+    return new Uint8ClampedArray(this.bitmap);
+  }
+
+  destroy(): void {
+    this.bitmap = undefined;
   }
 }
