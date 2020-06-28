@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent } from "react";
-import { Typography, Box, Tooltip, Switch } from "@material-ui/core";
+import { Typography, Box, Tooltip, Switch, makeStyles, Theme, createStyles } from "@material-ui/core";
 
 import SettingsIcon from "@material-ui/icons/Settings";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
@@ -22,7 +22,7 @@ export const RenderHeader: FunctionComponent<RenderHeaderProps> = ({
   return (
     <Box display="flex" marginBottom={2} flexDirection="row" alignItems="center" flexWrap="wrap">
       <Box marginRight={2} alignItems="center" display="flex">
-        <Typography variant="h5">{title}</Typography>
+        <Typography variant="h2">{title}</Typography>
         {description && (
           <Box marginLeft={1} alignItems="center" marginBottom={-0.5}>
             <Tooltip title={<Typography>{description}</Typography>}>

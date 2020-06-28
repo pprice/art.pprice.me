@@ -43,13 +43,6 @@ const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentTy
     }
   }, []);
 
-  /**
-   * background: #649F39;
-background: -webkit-radial-gradient(top left, #649F39, #24D7E3);
-background: -moz-radial-gradient(top left, #649F39, #24D7E3);
-background: radial-gradient(to bottom right, #649F39, #24D7E3);
-   */
-
   const drawerWidth = 250;
 
   const useStyles = makeStyles((theme: Theme) =>
@@ -58,13 +51,13 @@ background: radial-gradient(to bottom right, #649F39, #24D7E3);
         display: "flex",
       },
       appBar: {
-        backgroundImage:
-          "linear-gradient(45deg, #f0f0f0 8.33%, #e2e8eb 8.33%, #e2e8eb 50%, #f0f0f0 50%, #f0f0f0 58.33%, #e2e8eb 58.33%, #e2e8eb 100%)",
-        backgroundSize: "9px 9px",
+        backgroundColor: theme.palette.background.default,
         transition: theme.transitions.create(["margin", "width"], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.leavingScreen,
         }),
+        borderBottom: "1px solid",
+        borderBottomColor: theme.palette.divider,
       },
       appBarShift: {
         width: `calc(100% - ${drawerWidth}px)`,
@@ -111,6 +104,27 @@ background: radial-gradient(to bottom right, #649F39, #24D7E3);
         }),
         marginLeft: 0,
       },
+      heading: {
+        margin: 0,
+        marginTop: -6,
+        padding: 0,
+        overflow: "visible",
+        color: "#444433",
+      },
+      headingShift: {
+        marginLeft: 0,
+        transition: theme.transitions.create("margin", {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen,
+        }),
+      },
+      headingOpenShift: {
+        transition: theme.transitions.create("margin", {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: -drawerWidth,
+      },
     })
   );
 
@@ -136,6 +150,7 @@ background: radial-gradient(to bottom right, #649F39, #24D7E3);
         <div className={classes.root}>
           <CssBaseline />
           <AppBar
+            elevation={0}
             color="secondary"
             position="fixed"
             className={clsx(classes.appBar, {
@@ -143,26 +158,34 @@ background: radial-gradient(to bottom right, #649F39, #24D7E3);
             })}
           >
             <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                className={clsx(classes.menuButton, open && classes.hide)}
+              <Box
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                className={clsx(classes.headingShift, {
+                  [classes.headingOpenShift]: open,
+                })}
               >
-                <MenuIcon />
-              </IconButton>
-              {!open && (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleDrawerOpen}
+                  edge="start"
+                  className={clsx(classes.menuButton)}
+                >
+                  <MenuIcon htmlColor="#444433" fontSize="small" />
+                </IconButton>
+
                 <Link href="/" color="textPrimary">
-                  <Typography variant="h5" noWrap>
-                    art.pprice.me
+                  <Typography variant="h1" noWrap className={clsx(classes.heading)}>
+                    art.pprice
                   </Typography>
                 </Link>
-              )}
+              </Box>
 
               <Box flexGrow={1}></Box>
 
-              <Button startIcon={<GitHubIcon />} href="https://github.com/pprice/art.pprice.me/">
+              <Button startIcon={<GitHubIcon htmlColor="#444433" />} href="https://github.com/pprice/art.pprice.me/">
                 Github
               </Button>
             </Toolbar>
@@ -177,7 +200,7 @@ background: radial-gradient(to bottom right, #649F39, #24D7E3);
             }}
           >
             <div className={classes.drawerHeader}>
-              <Typography>art.pprice.me</Typography>
+              <Typography variant="h6">art.pprice</Typography>
               <IconButton onClick={handleDrawerClose}>
                 {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               </IconButton>
