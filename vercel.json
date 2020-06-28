@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/render/[...slug.js]": {
+      "includeFiles": "public/**/*.jpg"
+    }
+  }
+}
