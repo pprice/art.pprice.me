@@ -8,10 +8,11 @@ module.exports = {
       };
     }
 
-    config.externals = {
-      ...config.externals,
+    config.externals.push({
       canvas: "commonjs canvas",
-    };
+    });
+
+    console.dir(config);
 
     return config;
   },
