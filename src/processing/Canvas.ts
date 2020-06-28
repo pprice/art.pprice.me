@@ -1,5 +1,4 @@
 import Jimp from "jimp/es";
-import { join as pathJoin } from "path";
 
 /**
  * Abstract canvas implementation; to support server side rendering
@@ -82,18 +81,14 @@ export class ServerSideCanvas implements ImageDataCanvas {
   public width: number;
   public height: number;
 
-  constructor(private source: string) {}
+  constructor(private source: string, private baseUrl: string) {}
 
   async init() {
     if (this.source.startsWith("/")) {
-      this.source = this.source.substring(1);
+      this.source = this.baseUrl + this.source;
     }
 
-    const resolvedSource = this.source.startsWith("http")
-      ? this.source
-      : pathJoin(process.cwd(), "public", this.source);
-
-    const image = await Jimp.read(resolvedSource);
+    const image = await Jimp.read(this.source);
     const bitmap = image.bitmap;
 
     this.width = bitmap.width;

@@ -17,7 +17,8 @@ type SetupProducer<TSetupResult> = (statusCallback: (message: string) => void) =
 
 export type SetupFunc<TConfig, TSetupResult extends object> = (
   config: TConfig,
-  prior: TSetupResult | undefined
+  prior: TSetupResult | undefined,
+  context?: { baseUrl: string }
 ) => SetupProducer<TSetupResult> | undefined;
 
 type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends object = undefined> = {

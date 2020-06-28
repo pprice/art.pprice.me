@@ -25,7 +25,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return notFound();
     }
 
-    svg = await renderArtworkToSvg(artwork);
+    // HACK HACK: Figure out how to load public images
+    const baseUrl =
+      process.env.NODE_ENV === "production" ? `https://${req.headers.host}` : `http://${req.headers.host}`;
+
+    svg = await renderArtworkToSvg(artwork, baseUrl);
 
     if (!svg) {
       return notFound();

@@ -78,7 +78,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
   initialProps: {
     containerStrokeWidth: 0,
   },
-  setup: (config, prior) => {
+  setup: (config, prior, ctx) => {
     if (prior && config.image === prior.source && config.detail === prior.detail) {
       return undefined;
     }
@@ -86,7 +86,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     prior?.canvas?.destroy();
 
     return async () => {
-      const canvas = await createCanvas(config.image);
+      const canvas = await createCanvas(config.image, ctx);
       return {
         source: config.image,
         luminance: canvas.aggregateChunksAspectRatioFlat(config.detail, "median", "luminance"),

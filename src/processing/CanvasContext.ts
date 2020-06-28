@@ -2,7 +2,7 @@ import { rgb2Luminance, RGBA, rgb2hsl } from "./Color";
 import { OffscreenImageDataCanvas, DomImageDataCanvas, ImageDataCanvas, ServerSideCanvas } from "./Canvas";
 import { domLoadImageAsync } from "./Image";
 
-export async function createCanvas(source: string): Promise<CanvasContext | undefined> {
+export async function createCanvas(source: string, ctx?: { baseUrl: string }): Promise<CanvasContext | undefined> {
   if (process.browser) {
     const image = await domLoadImageAsync(source);
     let canvas: ImageDataCanvas;
@@ -16,7 +16,7 @@ export async function createCanvas(source: string): Promise<CanvasContext | unde
     return new CanvasContext(canvas);
   }
 
-  const serverSideLoader = new ServerSideCanvas(source);
+  const serverSideLoader = new ServerSideCanvas(source, ctx?.baseUrl);
   await serverSideLoader.init();
   return new CanvasContext(serverSideLoader);
 }
