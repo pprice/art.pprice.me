@@ -1,8 +1,8 @@
 {
   "name": "pprice-art",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
+  "private": "true",
   "scripts": {
     "dev": "next",
     "build": "next build",
