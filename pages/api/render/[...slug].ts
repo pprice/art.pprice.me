@@ -14,11 +14,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return notFound();
   }
 
-  slug.shift();
-
-  console.dir(req.url);
-  console.dir(req.headers);
-
   const key = slug.join("/");
   const now = new Date().valueOf();
   const current = RESPONSE_CACHE.get(key);
