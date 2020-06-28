@@ -1,4 +1,4 @@
-import "../src/wdyr";
+// import "../src/wdyr";
 import React, { useEffect, FunctionComponent } from "react";
 import clsx from "clsx";
 import Head from "next/head";

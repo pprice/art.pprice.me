@@ -20,6 +20,7 @@
     "jimp": "^0.13.0",
     "jsdom": "^16.2.2",
     "next": "^9.4.2",
+    "probe-image-size": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "seedrandom": "^3.0.5",
@@ -27,8 +28,6 @@
     "use-debounce": "^3.4.2"
   },
   "devDependencies": {
-    "@types/": "welldone-software/why-did-you-render",
-    "@types/chroma-js": "^2.0.0",
     "@types/d3": "^5.7.2",
     "@types/file-saver": "^2.0.1",
     "@types/jsdom": "^16.2.3",
@@ -37,6 +36,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/seed-random": "^2.2.0",
     "@types/seedrandom": "^2.4.28",
+    "canvas": "^2.6.1",
     "typescript": "^3.9.3"
   }
 }
