@@ -40,6 +40,6 @@
     "@types/react-dom": "^16.9.8",
     "@types/seed-random": "^2.2.0",
     "@types/seedrandom": "^2.4.28",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.5"
   }
 }
