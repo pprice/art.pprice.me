@@ -73,6 +73,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
   const [activeSetupAndConfig, setActiveSetupAndConfig] = useState<{ config: any; setup?: any }>(undefined);
   const [pendingConfig, setPendingConfig] = useState<any>(initialConfig);
+  const [setupError, setSetupError] = useState<Error | undefined>(undefined);
 
   const onConfigUpdated = (updated) => {
     setPendingConfig(updated);
@@ -100,7 +101,9 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         .then((res) => {
           setActiveSetupAndConfig({ config: pendingConfig, setup: res });
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(e);
+          setSetupError(e);
           setActiveSetupAndConfig({ config: pendingConfig });
         });
     }, 200);
@@ -123,8 +126,23 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   if (!activeSetupAndConfig || (onSetup && !activeSetupAndConfig?.setup)) {
     return (
       <Box display="flex" alignItems="center" flexDirection="column">
-        <CircularProgress />
-        <Typography variant="h5">Setting up...</Typography>
+        {!setupError && (
+          <>
+            <CircularProgress />
+            <Typography variant="h5">Setting up...</Typography>
+          </>
+        )}
+        {setupError && (
+          <>
+            <Typography variant="h5">Oops!</Typography>
+            <Typography>{setupError.message || setupError.message || "Something went wrong"}</Typography>
+            <Box marginTop={2}>
+              <Button variant="contained" onClick={() => window.location.reload()}>
+                Reload
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
     );
   }
