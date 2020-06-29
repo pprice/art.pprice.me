@@ -1,6 +1,9 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
 import * as colors from "@material-ui/core/colors";
+import createBreakpoints from "@material-ui/core/styles/createBreakpoints";
+
+const breakpoints = createBreakpoints({});
 
 // Create a theme instance.
 const theme = createMuiTheme({
@@ -21,6 +24,9 @@ const theme = createMuiTheme({
       fontWeight: 400,
       fontSize: "30px",
       color: "#444433",
+      [breakpoints.down("sm")]: {
+        fontSize: "16px",
+      },
     },
     h6: {
       fontFamily: "Lora",
