@@ -22,7 +22,7 @@
     "jimp": "^0.13.0",
     "jsdom": "^16.2.2",
     "jsonwebtoken": "^8.5.1",
-    "next": "^9.4.2",
+    "next": "^9.4.4",
     "probe-image-size": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
