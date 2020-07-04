@@ -1,6 +1,7 @@
 import { rgb2Luminance, RGBA, rgb2hsl } from "./Color";
 import { OffscreenImageDataCanvas, DomImageDataCanvas, ImageDataCanvas, ServerSideCanvas } from "./Canvas";
 import { domLoadImageAsync } from "./Image";
+import { size, Size, box, Box } from "@/geom";
 
 export async function createCanvas(source: string, ctx?: { baseUrl: string }): Promise<CanvasContext | undefined> {
   if (process.browser) {
@@ -66,8 +67,12 @@ export class CanvasContext {
     return this.canvas.height;
   }
 
-  get size(): [number, number] {
-    return [this.width, this.height];
+  get size(): Size {
+    return size(this.width, this.height);
+  }
+
+  get bounds(): Box {
+    return box(0, 0, this.width, this.height);
   }
 
   get smallestDimension(): number {

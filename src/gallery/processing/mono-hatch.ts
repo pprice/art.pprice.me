@@ -5,8 +5,11 @@ import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
 import { hatch45 } from "src/geom/hatch";
 import { scale } from "src/geom/math";
 import * as d3 from "d3";
-import { translateLines, flipAlternate } from "@/geom/lines";
-import { ALL_CURVE_CHOICES, getCurveFactory } from "../defaults/CurveDefaults";
+import { translateLines, flipAlternate, segmentToPoints } from "@/geom/segment";
+import { ALL_CURVE_CHOICES } from "../defaults/CurveDefaults";
+import { Curve } from "@/geom/curve";
+import { size, pointFromBox, sizeOf } from "@/geom";
+import { debug } from "console";
 
 const config = makeRenderConfig({
   image: {
@@ -81,25 +84,28 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    var lineFunction = d3.line<number[]>().curve(getCurveFactory(ctx.config.curve));
+    var lineFunction = ctx.getLineRenderer(ctx.config.curve as Curve);
 
-    const boxSize = ctx.centerFitRect(ctx.setup.canvas.size);
+    const boxFit = ctx.centerFitRect(ctx.setup.canvas.size);
+    const boxOffset = pointFromBox(boxFit, "top-left");
+    const boxSize = sizeOf(boxFit);
+
     const d1 = ctx.layer(selection, "d1");
-    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize[2], boxSize[3]);
+    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize.w, boxSize.h);
     const zip = segments.map((s, i) => ({ rect: s, value: ctx.setup.chunks[i] }));
 
-    const [, , w, h] = segments[0];
+    const { w, h } = sizeOf(segments[0]);
 
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 
     for (let p of zip) {
-      if (p.value > ctx.config.high_threshold) {
+      if (p.value == undefined || p.value > ctx.config.high_threshold) {
         continue;
       }
 
       const hatchFactor = Math.floor(scale(p.value, 0, 1, strength[1], strength[0]));
-
-      const hatch = flipAlternate(translateLines(hatch45(p.rect, hatchFactor), boxSize)).flat();
+      const hh = hatch45(p.rect, hatchFactor);
+      const hatch = segmentToPoints(flipAlternate(translateLines(hh, boxOffset)).flat());
       //const hatchR = flipAlternate(translateLines(hatch45(p.rect, hatchFactor, true), boxSize)).flat();
 
       ctx.plotLine(d1, "path").attr("d", lineFunction(hatch));

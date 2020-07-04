@@ -1,12 +1,15 @@
 import { RenderContext } from "../context/RenderContext";
 import { CanvasSize, BlendMode } from "@/const";
-import { Selection, BaseType } from "d3";
+import * as d3 from "d3";
+import { getCurveFactory } from "./curve";
+import { Curve } from "@/geom/curve";
+import { Point } from "@/geom";
 
 export type D3Selection<
-  GElement extends BaseType = BaseType,
+  GElement extends d3.BaseType = d3.BaseType,
   TDatum = any,
-  PElement extends BaseType = BaseType
-> = Selection<GElement, TDatum, PElement, TDatum>;
+  PElement extends d3.BaseType = d3.BaseType
+> = d3.Selection<GElement, TDatum, PElement, TDatum>;
 
 export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfig, TSetupConfig> {
   private layerId: number = 0;
@@ -38,12 +41,24 @@ export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfi
       .attr("inkscape-label", `${idx}-${name}`);
   }
 
+  public getLineRenderer<TPoint extends Point>(curve: Curve = "linear") {
+    return d3
+      .line<TPoint>()
+      .curve(getCurveFactory(curve))
+      .x((p) => p.x)
+      .y((p) => p.y);
+  }
+
+  public getCurve(curve: Curve = "linear") {
+    return getCurveFactory(curve);
+  }
+
   public layer(target: D3Selection, name: string, id: string = name): D3Selection {
     target.select(`#${id}`).remove();
     return this.appendLayer(target, name, id);
   }
 
-  public applyPlotLineAttr<TSelection extends BaseType>(
+  public applyPlotLineAttr<TSelection extends d3.BaseType>(
     selection: D3Selection<TSelection>,
     pen: string = "black",
     width: number = 0.75

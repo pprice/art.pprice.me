@@ -1,20 +1,27 @@
-import { Rect, Point, Line } from "./types";
+import { Box, Segment } from "./types";
+import flatten from "@flatten-js/core";
 
-export function crossHatch45(r: Rect, interval: number) {
+const MAX_ITER = 10000;
+
+export function crossHatch45(r: Box, interval: number) {
   return [...hatch45(r, interval), ...hatch45(r, interval, true)];
 }
 
-export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean = false): Line[] {
-  let sx = x;
-  let sy = y;
-  w += x;
-  h += y;
+export function hatch45(
+  { xmin = Number.NaN, ymin = Number.NaN, xmax = Number.NaN, ymax = Number.NaN }: Box,
+  interval: number,
+  reverse: boolean = false
+): Segment[] {
+  let sx = xmin;
+  let sy = ymin;
 
   if (Number.isNaN(interval) || !Number.isFinite(interval)) {
     throw new Error(`Invalid interval ${interval} specified`);
+  } else if (Number.isNaN(xmin) || Number.isNaN(xmax) || Number.isNaN(ymin) || Number.isNaN(ymax)) {
+    throw new Error(`Invalid bounding box dimensions, ${xmin},${xmax},${ymin},${ymax}`);
   }
 
-  const result: Line[] = [];
+  const result: Segment[] = [];
 
   // Create diagonal lines within rect
   if (!reverse) {
@@ -22,17 +29,14 @@ export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean =
     sx = sx + interval; // offset by one interval
     let ey = sy + interval; // same for end y
 
-    while (true) {
-      result.push([
-        [sx, sy],
-        [ex, ey],
-      ]);
+    while (true && result.length < MAX_ITER) {
+      result.push(flatten.segment([sx, sy, ex, ey]));
 
       sx += interval; // start x walks across
-      if (sx > w) {
+      if (sx > xmax) {
         // when it hits the edge...
-        sy += sx - w; // ...move down by the remainder*
-        sx = w; // ...and stop x
+        sy += sx - xmax; // ...move down by the remainder*
+        sx = xmax; // ...and stop x
       }
 
       // * right triangle math!
@@ -43,9 +47,9 @@ export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean =
       //   the same
 
       ey += interval; // same for end y
-      if (ey > h) {
-        ex += ey - h;
-        ey = h;
+      if (ey > ymax) {
+        ex += ey - ymax;
+        ey = ymax;
       }
 
       if (ex >= sx) {
@@ -57,16 +61,13 @@ export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean =
   // reversed lines
   else {
     let startX = sx;
-    sx = w - interval;
+    sx = xmax - interval;
 
-    let ex = w;
+    let ex = xmax;
     let ey = sy + interval;
 
-    while (true) {
-      result.push([
-        [sx, sy],
-        [ex, ey],
-      ]);
+    while (true && result.length < MAX_ITER) {
+      result.push(flatten.segment([sx, sy, ex, ey]));
 
       sx -= interval;
       if (sx < startX) {
@@ -75,9 +76,9 @@ export function hatch45([x, y, w, h]: Rect, interval: number, reverse: boolean =
       }
 
       ey += interval;
-      if (ey > h) {
-        ex -= ey - h;
-        ey = h;
+      if (ey > ymax) {
+        ex -= ey - ymax;
+        ey = ymax;
       }
 
       if (ex <= sx) break;

@@ -2,6 +2,7 @@ import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
 import { CanvasContext, createCanvas } from "src/processing/CanvasContext";
 import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
+import { sizeOf, pointFromBox } from "@/geom";
 
 const config = makeRenderConfig({
   image: {
@@ -64,9 +65,12 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    const boxSize = ctx.centerFitRect(ctx.setup.canvas.size);
+    const boxFit = ctx.centerFitRect(ctx.setup.canvas.size);
+    const boxSize = sizeOf(boxFit);
+    const boxOffset = pointFromBox(boxFit, "top-left");
+
     const d1 = ctx.layer(selection, "d1");
-    const segments = ctx.segmentAspectRatio(ctx.config.detail, "center", boxSize[2], boxSize[3]);
+    const segments = ctx.segmentAspectRatio(ctx.config.detail, "center", boxSize.w, boxSize.h);
     const zip = segments.map((s, i) => ({ xy: s, lum: ctx.setup.chunks[i] }));
 
     ctx.applyPlotLineAttr(
@@ -76,8 +80,8 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
         .enter()
         .filter((g) => g.lum < ctx.config.low_threshold)
         .append("circle")
-        .attr("cx", (v) => boxSize[0] + v.xy[0])
-        .attr("cy", (v) => boxSize[1] + v.xy[1])
+        .attr("cx", (v) => boxOffset.x + v.xy.x)
+        .attr("cy", (v) => boxOffset.y + v.xy.y)
         .attr("r", (v) => (1 - v.lum) * ctx.config.radius)
     );
   },

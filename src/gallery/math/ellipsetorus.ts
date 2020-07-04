@@ -48,7 +48,7 @@ const Torus: D3Artwork<typeof config> = {
 
     let groups = ctx.range(1, ctx.config.groups).map((i) => ({ layer: ctx.layer(selection, `group-${i}`) }));
 
-    for (let i = 0; i < 180; i += stepSize) {
+    for (let i = 0; i < Math.ceil(180 - stepSize); i += stepSize) {
       const groupId = Math.floor(i) % ctx.config.groups;
 
       const layer = groups[groupId]?.layer;
@@ -60,8 +60,8 @@ const Torus: D3Artwork<typeof config> = {
 
       layer
         .append("ellipse")
-        .attr("cx", center[0])
-        .attr("cy", center[1])
+        .attr("cx", center.x)
+        .attr("cy", center.y)
         .attr("rx", ctx.config.radius_x)
         .attr("ry", ctx.config.radius_y)
         .attr("transform", `rotate(${i}, ${ctx.width / 2}, ${ctx.height / 2})`)

@@ -1,5 +1,10 @@
-export type Point = [number, number];
-export type Line = [Point, Point];
-export type Size = [number, number];
-export type Rect = [number, number, number, number];
-export type Polygon = Point[];
+import flatten from "@flatten-js/core";
+
+export type Point = flatten.Point;
+export type Box = flatten.Box;
+export type Polygon = flatten.Polygon;
+export type Segment = flatten.Segment;
+
+export type Line = flatten.Line;
+
+export type Size = { w: number; h: number };

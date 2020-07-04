@@ -978,6 +978,18 @@
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.8.0.tgz#bbbff68978fefdbe68ccb533bc8cbe1d1afb5413"
   integrity sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow==
 
+"@flatten-js/core@^1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@flatten-js/core/-/core-1.2.8.tgz#ae59bd5df4f475b4a7dcefa5e06362cc316163b8"
+  integrity sha512-7wzj4HXTBGSWaDQUAqpoqP/kJDX7lBMbidWRZrwf1dQWSLoTAoSBK0TBwmYzi+/JzLfgN+FyKaBgYnQQPZgjfw==
+  dependencies:
+    "@flatten-js/interval-tree" "^1.0.11"
+
+"@flatten-js/interval-tree@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@flatten-js/interval-tree/-/interval-tree-1.0.11.tgz#1864a3c2ec7972e28dd1eeb26f82b609590baa15"
+  integrity sha512-gp9mS5d7QTcjE9mTG3hoiC82q1MjqX+nrAlKODkj45YXWMhR/j/OHStTVw9qRTUEiq6mzspE8iFi3JTAg8s7Pw==
+
 "@jimp/bmp@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@jimp/bmp/-/bmp-0.13.0.tgz#cca2301e56231e7dc20d5aba757fb237b94e2013"

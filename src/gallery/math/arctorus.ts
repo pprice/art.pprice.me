@@ -69,7 +69,7 @@ const Torus: D3Artwork<typeof config> = {
       const pen = Pens[groupId];
 
       const path = d3.path();
-      path.arc(ctx.center[0] - offset, ctx.center[1], radius, 0, ctx.config.arc_length);
+      path.arc(ctx.center.x - offset, ctx.center.y, radius, 0, ctx.config.arc_length);
 
       ctx
         .plotLine(layer, "path", pen)
@@ -85,10 +85,10 @@ const Torus: D3Artwork<typeof config> = {
       const interiorRadius = exteriorRadius * (ctx.config.interior / 100);
 
       // Exterior
-      ctx.plotLine(layer, "circle", pen).attr("cx", ctx.center[0]).attr("cy", ctx.center[1]).attr("r", exteriorRadius);
+      ctx.plotLine(layer, "circle", pen).attr("cx", ctx.center.x).attr("cy", ctx.center.y).attr("r", exteriorRadius);
 
       // Interior
-      ctx.plotLine(layer, "circle", pen).attr("cx", ctx.center[0]).attr("cy", ctx.center[1]).attr("r", interiorRadius);
+      ctx.plotLine(layer, "circle", pen).attr("cx", ctx.center.x).attr("cy", ctx.center.y).attr("r", interiorRadius);
     }
   },
 };

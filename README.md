@@ -50,9 +50,10 @@ Generated SVGs are designed to be plotted using a pen plotter, specifically an [
 
 A few shoutouts to some of the packages used for this project.
 
+- [flatten-js](https://github.com/alexbol99/flatten-js) - 2d geometry
+- [d3](https://d3js.org/) - Data Driven Documents, SVG munging
 - [typescript](https://www.typescriptlang.org/) - Typed javascript
 - [react](https://reactjs.org/) - User interface
 - [next.js](https://nextjs.org/) - Serving, page rendering, fast-refreshing
 - [material-ui](https://material-ui.com/) - UI Components
-- [d3](https://d3js.org/) - Data Driven Documents, SVG munging
 - [file-saver](https://github.com/eligrey/FileSaver.js/) - SVG Savin'

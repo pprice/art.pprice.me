@@ -4,10 +4,11 @@ import { CanvasContext, createCanvas } from "src/processing/CanvasContext";
 import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
 import { hatch45 } from "src/geom/hatch";
 import { scale } from "src/geom/math";
-import * as d3 from "d3";
-import { translateLines, flipAlternate } from "@/geom/lines";
-import { ALL_CURVE_CHOICES, getCurveFactory } from "../defaults/CurveDefaults";
+import { translateLines, flipAlternate, segmentToPoints } from "@/geom/segment";
+import { ALL_CURVE_CHOICES } from "../defaults/CurveDefaults";
 import { MicronPigma } from "@/const";
+import { Curve } from "@/geom/curve";
+import { pointFromBox, sizeOf } from "@/geom";
 
 const config = makeRenderConfig({
   image: {
@@ -98,8 +99,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    var lineFunction = d3.line<number[]>().curve(getCurveFactory(ctx.config.curve));
-
+    var lineFunction = ctx.getLineRenderer(ctx.config.curve as Curve);
     const layers = HueRanges.map((r) => ({ ...r, layer: ctx.layer(selection, r.name) }));
 
     function pickLayerForHue(h: number): typeof layers[0] {
@@ -108,8 +108,11 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
 
     const o = { pen: "black", layer: ctx.layer(selection, "other") };
 
-    const boxSize = ctx.centerFitRect(ctx.setup.canvas.size);
-    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize[2], boxSize[3]);
+    const boxFit = ctx.centerFitRect(ctx.setup.canvas.size);
+    const boxOffset = pointFromBox(boxFit, "top-left");
+    const boxSize = sizeOf(boxFit);
+
+    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize.w, boxSize.h);
 
     if (segments.length != ctx.setup.luminance.length) {
       console.error("Out of sync");
@@ -123,7 +126,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
       h: ctx.setup.hue[i],
     }));
 
-    const [, , w, h] = segments[0];
+    const { w, h } = sizeOf(segments[0]);
 
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 
@@ -135,7 +138,9 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
       const hatchFactor = scale(p.l, 0, 1, strength[1], strength[0]);
       const hatchFactorFloored = Math.floor(hatchFactor);
 
-      const hatch = flipAlternate(translateLines(hatch45(p.rect, hatchFactorFloored), boxSize)).flat();
+      const hatch = segmentToPoints(
+        flipAlternate(translateLines(hatch45(p.rect, hatchFactorFloored), boxOffset)).flat()
+      );
       //const hatchR = flipAlternate(translateLines(hatch45(p.rect, hatchFactor, true), boxSize)).flat();
 
       const layer = p.s > 0.2 && p.l < 0.8 ? pickLayerForHue(p.h) : o;

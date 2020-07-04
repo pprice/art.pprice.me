@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
 import { MicronPigma } from "@/const";
+import { point, Point } from "@/geom";
 
 const config = makeRenderConfig({
   num_lines: {
@@ -32,17 +33,17 @@ const Lines: D3Artwork<typeof config> = {
   },
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
-    var lineFunction = d3.line<number[]>().curve(d3.curveBundle);
+    var lineFunction = ctx.getLineRenderer("bundle");
     const vSegment = ctx.segmentDimension(ctx.config.num_lines, "vertical");
     const hSegment = ctx.segmentDimension(10, "horizontal");
 
     for (let segment of vSegment) {
-      const lineData: number[][] = [
-        [0, ctx.height / 4 + segment / 2],
+      const lineData: Point[] = [
+        point(0, ctx.height / 4 + segment / 2),
         ...ctx
           .range(1, hSegment.length)
           .map((_x, j) => ctx.clamp([hSegment[j], segment + ctx.random.between(ctx.config.variance)], 5)),
-        [ctx.width, ctx.height / 4 + segment / 2],
+        point(ctx.width, ctx.height / 4 + segment / 2),
       ];
 
       selection
