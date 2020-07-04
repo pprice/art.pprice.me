@@ -112,8 +112,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     const boxOffset = pointFromBox(boxFit, "top-left");
     const boxSize = sizeOf(boxFit);
 
-    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize.w, boxSize.h);
-
+    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", Math.round(boxSize.w), Math.round(boxSize.h));
     if (segments.length != ctx.setup.luminance.length) {
       console.error("Out of sync");
       return;

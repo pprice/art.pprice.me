@@ -91,8 +91,16 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     const boxSize = sizeOf(boxFit);
 
     const d1 = ctx.layer(selection, "d1");
-    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", boxSize.w, boxSize.h);
+    const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", Math.round(boxSize.w), Math.round(boxSize.h));
     const zip = segments.map((s, i) => ({ rect: s, value: ctx.setup.chunks[i] }));
+
+    if (segments.length != ctx.setup.chunks.length) {
+      console.dir(boxFit);
+      console.dir(boxSize);
+      console.dir(ctx.config.detail);
+      console.error(`Out of sync ${segments.length} segments vs ${ctx.setup.chunks.length} chunks`);
+      return;
+    }
 
     const { w, h } = sizeOf(segments[0]);
 
