@@ -2,7 +2,7 @@ import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
 import { CanvasContext, createCanvas } from "src/processing/CanvasContext";
 import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
-import { hatch45 } from "src/geom/hatch";
+import { hatch45, hatch } from "src/geom/hatch";
 import { scale } from "src/geom/math";
 import * as d3 from "d3";
 import { translateLines, flipAlternate, segmentToPoints } from "@/geom/segment";
@@ -112,11 +112,9 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
       }
 
       const hatchFactor = Math.floor(scale(p.value, 0, 1, strength[1], strength[0]));
-      const hh = hatch45(p.rect, hatchFactor);
-      const hatch = segmentToPoints(flipAlternate(translateLines(hh, boxOffset)).flat());
-      //const hatchR = flipAlternate(translateLines(hatch45(p.rect, hatchFactor, true), boxSize)).flat();
+      const hatchPoints = segmentToPoints(translateLines(hatch(p.rect, hatchFactor), boxOffset));
 
-      ctx.plotLine(d1, "path").attr("d", lineFunction(hatch));
+      ctx.plotLine(d1, "path").attr("d", lineFunction(hatchPoints));
     }
   },
 };
