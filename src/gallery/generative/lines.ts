@@ -33,7 +33,7 @@ const Lines: D3Artwork<typeof config> = {
   },
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
-    var lineFunction = ctx.getLineRenderer("bundle");
+    var lineFunction = ctx.getPointLineRenderer("bundle");
     const vSegment = ctx.segmentDimension(ctx.config.num_lines, "vertical");
     const hSegment = ctx.segmentDimension(10, "horizontal");
 

@@ -84,7 +84,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    var lineFunction = ctx.getLineRenderer(ctx.config.curve as Curve);
+    var lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
 
     const boxFit = ctx.centerFitRect(ctx.setup.canvas.size);
     const boxOffset = pointFromBox(boxFit, "top-left");

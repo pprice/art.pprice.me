@@ -4,6 +4,7 @@ export type Point = flatten.Point;
 export type Box = flatten.Box;
 export type Polygon = flatten.Polygon;
 export type Segment = flatten.Segment;
+export type Circle = flatten.Circle;
 
 export type Line = flatten.Line;
 

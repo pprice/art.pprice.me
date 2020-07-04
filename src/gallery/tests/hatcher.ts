@@ -5,6 +5,8 @@ import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
 import { MicronPigma } from "@/const";
 import { toRadians } from "@/geom/math";
+import { identityMatrix } from "@/geom";
+import { hatch, crossHatch } from "@/geom/hatch";
 
 const config = makeRenderConfig({
   num_h_lines: {
@@ -28,38 +30,28 @@ const TestPrint: D3Artwork<typeof config> = {
   config,
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
-    var lineFunction = d3
-      .line<flatten.Point>()
-      .curve(d3.curveLinear)
-      .x((p) => p.x)
-      .y((p) => p.y);
+    var lineFunction = ctx.getPointLineRenderer("linear");
     const d1 = ctx.layer(selection, "d1");
     const d2 = ctx.layer(selection, "d2");
 
-    const container2 = new flatten.Box(40, 40, 200, 200);
-    const container = new flatten.Polygon(container2);
+    const b1 = new flatten.Box(40, 40, 200, 400);
+    const b2 = new flatten.Box(40 + 300, 40, 200 + 300, 400);
 
-    let lines: flatten.Segment[] = [];
+    const container1 = new flatten.Polygon(b1.toSegments());
+    const container2 = new flatten.Polygon(b2.toSegments());
 
-    const wO = (container.box.xmax - container.box.xmin) / 4;
-    const hO = (container.box.ymax - container.box.ymin) / 4;
+    const hatch1 = hatch(container1, 10, 145);
+    const hatch2 = crossHatch(container2, 10, 12);
 
-    for (let x = container.box.xmin - wO; x < container.box.xmax + wO; x += 10) {
-      lines.push(flatten.segment(flatten.point(x, container.box.ymin - hO), flatten.point(x, container.box.ymax + hO)));
+    for (let h of hatch1) {
+      ctx.plotLine(d2, "path", "blue").attr("d", lineFunction([h.ps, h.pe]));
     }
 
-    const a = 45;
+    for (let hh of hatch2) {
+      ctx.plotLine(d1, "path", "red").attr("d", lineFunction(hh.map((l) => [l.pe, l.ps]).flat()));
+    }
 
-    lines = [
-      ...lines.map((r) => r.rotate(toRadians(a), container.box.center)),
-      ...lines.map((r) => r.rotate(toRadians(180 - a), container.box.center)),
-    ];
-
-    const intersected = lines.map((l) => container.intersect(l)).flat();
-
-    ctx.plotLine(d1, "path").attr("d", lineFunction(intersected));
-    //ctx.plotLine(d2, "path", "red").attr("d", lineFunction(lines.map((l) => [l.pe, l.ps]).flat()));
-    ctx.plotLine(d2, "path", "green").attr("d", lineFunction(container.vertices));
+    ctx.plotLine(d2, "path", "green").attr("d", lineFunction(container1.vertices));
   },
 };
 

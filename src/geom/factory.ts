@@ -33,3 +33,7 @@ export function sizeOf(shape: flatten.Shape): Size {
 
   throw new Error("Not supported");
 }
+
+export function identityMatrix() {
+  return flatten.matrix(1, 0, 0, 1, 0, 0);
+}

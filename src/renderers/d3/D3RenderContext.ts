@@ -41,7 +41,7 @@ export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfi
       .attr("inkscape-label", `${idx}-${name}`);
   }
 
-  public getLineRenderer<TPoint extends Point>(curve: Curve = "linear") {
+  public getPointLineRenderer<TPoint extends Point>(curve: Curve = "linear") {
     return d3
       .line<TPoint>()
       .curve(getCurveFactory(curve))

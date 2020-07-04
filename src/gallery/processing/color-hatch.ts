@@ -99,7 +99,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    var lineFunction = ctx.getLineRenderer(ctx.config.curve as Curve);
+    var lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
     const layers = HueRanges.map((r) => ({ ...r, layer: ctx.layer(selection, r.name) }));
 
     function pickLayerForHue(h: number): typeof layers[0] {
