@@ -21,7 +21,7 @@ export const ChoiceEditor: PropertyEditorComponent<ChoiceProperty> = ({
 
   return (
     <>
-      <Select fullWidth value={value} onChange={(e, v) => handleUpdate(e.target.value as string)}>
+      <Select fullWidth value={value} onChange={(e) => handleUpdate(e.target.value as string)}>
         {property.choices.map((p) => (
           <MenuItem key={p.value} value={p.value}>
             {p.label || p.value}

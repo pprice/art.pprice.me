@@ -24,12 +24,14 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 
 import theme from "@/components/Theme";
 
-// Generated
-import classes from "*.module.css";
 import { NextComponentType } from "next";
 import { GalleryIndex } from "@/components/GalleryIndex";
 
-type MyAppProps = AppProps & {};
+// Generated
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import classes from "*.module.css";
+
+type MyAppProps = AppProps;
 
 const MyApp: FunctionComponent<MyAppProps> & { getInitialProps?: NextComponentType["getInitialProps"] } = ({
   Component,

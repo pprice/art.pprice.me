@@ -12,7 +12,7 @@ export const NumberRangeEditor: PropertyEditorComponent<NumericRangeProperty> = 
   const [value, setValue] = useState(initial);
 
   const handleUpdate = useCallback(
-    (newValue: number[]) => {
+    (newValue: [number, number]) => {
       onUpdated(propertyKey, value, newValue);
       setValue([newValue[0], newValue[1]]);
     },
@@ -26,7 +26,7 @@ export const NumberRangeEditor: PropertyEditorComponent<NumericRangeProperty> = 
         min={property.min}
         max={property.max}
         step={property.step}
-        onChange={(e, value) => handleUpdate(value as number[])}
+        onChange={(e, value) => handleUpdate(value as [number, number])}
       />
       <Box marginLeft={1} width={150} flexDirection="row" display="flex">
         <Box marginRight={1}>

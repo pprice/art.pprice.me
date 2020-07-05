@@ -1,18 +1,18 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Box, Grid, Typography } from "@material-ui/core";
 
-import { RenderConfiguration, RuntimeRenderConfiguration, getDefaultConfiguration } from "./Config";
+import { RenderConfiguration, RuntimeRenderConfiguration } from "./Config";
 import { PropertyEditor } from "./editors/PropertyEditor";
 
 type ConfigEditorProps = {
   config: RenderConfiguration;
-  onConfigUpdated: (runtimeConfig: any) => void;
-  activeConfig?: any;
+  onConfigUpdated: (runtimeConfig: unknown) => void;
+  activeConfig?: RuntimeRenderConfiguration;
 };
 
 export const ConfigEditor: FunctionComponent<ConfigEditorProps> = ({ config, activeConfig, onConfigUpdated }) => {
-  const [handleUpdate] = useDebouncedCallback((key: string, _oldValue: any, newValue: any) => {
+  const [handleUpdate] = useDebouncedCallback((key: string, _oldValue: unknown, newValue: unknown) => {
     // console.log(`Update to ${key}: ${_oldValue}->${newValue}`);
 
     const updated = { ...activeConfig, [key]: newValue };

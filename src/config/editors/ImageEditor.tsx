@@ -11,7 +11,6 @@ import {
   GridListTile,
   makeStyles,
   createStyles,
-  Theme,
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
@@ -28,7 +27,7 @@ type ImageSearchResponse = {
   name: string;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     searchItem: {
       cursor: "pointer",
@@ -47,8 +46,8 @@ export const ImageEditor: PropertyEditorComponent<ImageProperty> = ({ propertyKe
   const [remoteSource, setRemoteSource] = useState<ImageSource | undefined>();
 
   const [searchValue, setSearchValue] = useState<string>("");
-  const containerRef = useRef<any>();
-  const textFieldRef = useRef<any>();
+  const containerRef = useRef<HTMLDivElement>();
+  const textFieldRef = useRef<HTMLDivElement>();
 
   const handleUpdate = useCallback(
     (newValue: string, remote: ImageSource = undefined) => {
@@ -91,7 +90,7 @@ export const ImageEditor: PropertyEditorComponent<ImageProperty> = ({ propertyKe
             fullWidth
             disabled={imageSearchOpen}
             value={initial}
-            onChange={(e, v) => handleUpdate(e.target.value as string)}
+            onChange={(e) => handleUpdate(e.target.value as string)}
           >
             {[...property.predefined, remoteSource].filter(Boolean).map((p: ImageSource) => (
               <MenuItem key={p.source} value={p.source} disabled={p.disabled}>

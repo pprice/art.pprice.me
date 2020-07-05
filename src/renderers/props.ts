@@ -1,6 +1,8 @@
 import { PaperSize, Sizes } from "../const/sizes";
 import { D3RenderFrameProps } from "./d3/D3RenderFrame";
 import { BlendMode } from "@/const";
+import { SetupResult } from "@/gallery/types/d3";
+import { RuntimeRenderConfiguration } from "@/config";
 
 export type RenderRef = {
   serialize: () => Blob;
@@ -13,8 +15,8 @@ export type BaseRenderFrameProps = {
   containerStroke?: string;
   containerStrokeWidth?: number;
   margin?: number | number[]; // LTRB
-  config?: Record<string, unknown>;
-  setupResult?: Record<string, unknown>;
+  config?: RuntimeRenderConfiguration;
+  setupResult?: SetupResult;
   seed: string;
   attribution?: string;
   ref?: React.MutableRefObject<RenderRef>;

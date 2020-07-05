@@ -61,7 +61,7 @@ export type PropertyInfer<T> = T extends NumericProperty
   ? string
   : never;
 
-export type RuntimeRenderConfiguration<T extends RenderConfiguration> = {
+export type RuntimeRenderConfiguration<T extends RenderConfiguration = RenderConfiguration> = {
   [K in keyof T]: PropertyInfer<T[K]>;
 };
 

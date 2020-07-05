@@ -11,3 +11,5 @@ export const RenderFrame = memo(
     return <div>Unsupported</div>;
   })
 );
+
+RenderFrame.displayName = "RenderFrame";

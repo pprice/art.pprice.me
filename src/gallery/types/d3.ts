@@ -13,15 +13,20 @@ type InitialProps = {
   containerStrokeWidth: number;
 };
 
-type SetupProducer<TSetupResult> = (statusCallback: (message: string) => void) => Promise<TSetupResult>;
+export type SetupResult = { [key: string]: unknown };
 
-export type SetupFunc<TConfig, TSetupResult extends Record<string, unknown>> = (
+type SetupProducer<TSetupResult> = (statusCallback?: (message: string) => void) => Promise<TSetupResult>;
+
+export type SetupFunc<
+  TConfig extends RuntimeRenderConfiguration = RuntimeRenderConfiguration,
+  TSetupResult extends SetupResult = SetupResult
+> = (
   config: TConfig,
   prior: TSetupResult | undefined,
   context?: { baseUrl: string }
 ) => SetupProducer<TSetupResult> | undefined;
 
-type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends Record<string, unknown> = undefined> = {
+type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends SetupResult = SetupResult> = {
   initialProps?: Partial<InitialProps>;
   config: TConfig;
   presents?: { [key: string]: RuntimeRenderConfiguration<TConfig> }[];
@@ -34,10 +39,10 @@ type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends Recor
 
 export type D3Artwork<
   TConfig extends RenderConfiguration,
-  TSetupResult extends Record<string, unknown> = undefined,
+  TSetupResult extends SetupResult = SetupResult,
   TBaseType extends BaseType = BaseType,
   TDatum = unknown
-> = BaseArtwork<TConfig, Record<string, unknown>> & {
+> = BaseArtwork<TConfig, TSetupResult> & {
   type: "d3";
   render: (
     selection: D3Selection<TBaseType, TDatum>,
@@ -45,7 +50,7 @@ export type D3Artwork<
   ) => void;
 };
 
-export type Artwork<TConfig extends RenderConfiguration, TSetupResult extends Record<string, unknown>> = D3Artwork<
+export type Artwork<TConfig extends RenderConfiguration, TSetupResult extends SetupResult> = D3Artwork<
   TConfig,
   TSetupResult
 >;

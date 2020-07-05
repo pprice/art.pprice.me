@@ -25,19 +25,19 @@ import { RenderFrameProps, RenderRef } from "./props";
 import { PaperSizes, BLEND_MODES, BlendMode } from "../const";
 
 import { RenderFrame } from "./RenderFrame";
-import { RenderConfiguration, getDefaultConfiguration, ConfigEditor } from "../config";
+import { RenderConfiguration, getDefaultConfiguration, ConfigEditor, RuntimeRenderConfiguration } from "../config";
 import { useDebounce } from "../hooks/UseDebounce";
 import { PartialBy } from "@/utils";
 import theme from "@/components/Theme";
-import { SetupFunc } from "@/gallery/types/d3";
+import { SetupFunc, SetupResult } from "@/gallery/types/d3";
 import { RenderHeader } from "./RenderHeader";
 
 type PartialRenderFrameProps = "seed" | "orientation" | "size" | "blendMode" | "margin";
 
-type RenderContainerProps = PartialBy<Omit<RenderFrameProps, "ref">, PartialRenderFrameProps> & {
+type RenderContainerProps = PartialBy<Omit<RenderFrameProps, "ref" | "config">, PartialRenderFrameProps> & {
   defaultFileName?: string;
   config?: RenderConfiguration;
-  onSetup?: SetupFunc<any, any>;
+  onSetup?: SetupFunc;
   title?: string;
   description?: string;
   supportsRandom?: boolean;
@@ -71,8 +71,10 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const debouncedSeed = useDebounce(seed, 250);
 
   const initialConfig = useMemo(() => getDefaultConfiguration(config), [config]);
-  const [activeSetupAndConfig, setActiveSetupAndConfig] = useState<{ config: any; setup?: any }>(undefined);
-  const [pendingConfig, setPendingConfig] = useState<any>(initialConfig);
+  const [activeSetupAndConfig, setActiveSetupAndConfig] = useState<
+    { config: RuntimeRenderConfiguration; setup?: SetupResult } | undefined
+  >(undefined);
+  const [pendingConfig, setPendingConfig] = useState<RuntimeRenderConfiguration>(initialConfig);
   const [setupError, setSetupError] = useState<Error | undefined>(undefined);
 
   const onConfigUpdated = (updated) => {
@@ -97,7 +99,9 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
     // NOTE: It is important that the update to setup and config is atomic as there
     // is a dependency between the two in most cases
     const handle = setTimeout(() => {
-      setupProducer(() => {})
+      setupProducer(() => {
+        /* TODO*/
+      })
         .then((res) => {
           setActiveSetupAndConfig({ config: pendingConfig, setup: res });
         })

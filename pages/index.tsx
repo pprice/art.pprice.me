@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { getGalleryIndex } from "@/gallery";
-import { Box, GridList, GridListTile, useMediaQuery, Link, Typography } from "@material-ui/core";
+import { Box, GridList, GridListTile, useMediaQuery, Typography } from "@material-ui/core";
 import theme from "@/components/Theme";
 
 function Home() {

@@ -1,4 +1,4 @@
-import { useMemo, useRef, memo, useEffect, forwardRef, useImperativeHandle } from "react";
+import React, { useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import * as d3 from "d3";
 
 import { Sizes, CanvasSize, createCanvasSize, inchesToPixels } from "@/const/sizes";
@@ -21,11 +21,14 @@ const useSSREffect = (effect: React.EffectCallback, deps?: React.DependencyList)
 
 export type D3RenderFrameProps<TDatum> = BaseRenderFrameProps & {
   type: "d3";
-  onRender: (selection: D3Selection<BaseType, TDatum>, context: D3RenderContext<any, any>) => Promise<void> | void;
-  svgDom?: any;
+  onRender: (
+    selection: D3Selection<BaseType, TDatum>,
+    context: D3RenderContext<unknown, unknown>
+  ) => Promise<void> | void;
+  svgDom?: Element;
 };
 
-export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((props, ref) => {
+export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<unknown>>((props, ref) => {
   const svgSize = useMemo(() => {
     const factory = Sizes[props.size];
     if (!factory) {
@@ -60,7 +63,7 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((pro
       : [1, 1, 1, 1];
 
     // Calculate drawing area
-    let drawingDimensions = [...svgSize.inches];
+    const drawingDimensions = [...svgSize.inches];
 
     if (margins) {
       drawingDimensions[0] = drawingDimensions[0] - margins[0] - margins[2];
@@ -127,7 +130,9 @@ export const D3RenderFrame = forwardRef<RenderRef, D3RenderFrameProps<any>>((pro
   );
 });
 
-function drawContainer(layer: D3Selection<any>, marginsPixels: number[], drawingCanvas: CanvasSize, props) {
+D3RenderFrame.displayName = "D3RenderFrame";
+
+function drawContainer(layer: D3Selection, marginsPixels: number[], drawingCanvas: CanvasSize, props) {
   layer
     .append("rect")
     .attr("x", marginsPixels[0])
@@ -142,7 +147,7 @@ function drawContainer(layer: D3Selection<any>, marginsPixels: number[], drawing
 function drawAttribution(
   attribution: string,
   seed: string,
-  attributionLayer: D3Selection<any>,
+  attributionLayer: D3Selection,
   marginsPixels: number[],
   drawingCanvas: CanvasSize
 ) {

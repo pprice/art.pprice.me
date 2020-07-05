@@ -1,4 +1,4 @@
-import { Artwork } from "./types/d3";
+import { Artwork, SetupResult } from "./types/d3";
 import { RenderConfiguration } from "@/config";
 
 // To ensure these are included in a bundle a dynamic require can't be used for static site hosting
@@ -7,17 +7,17 @@ import * as generative from "./generative";
 import * as math from "./math";
 import * as processing from "./processing";
 
-type ArtworkExport<TConfig extends RenderConfiguration, TSetup extends Record<string, unknown>> = {
+type ArtworkExport<TConfig extends RenderConfiguration, TSetup extends SetupResult> = {
   default?: Artwork<TConfig, TSetup>;
 };
 
-const index: Record<string, Artwork<RenderConfiguration, Record<string, unknown>>> = buildLookupFromImports(
+const index: Record<string, Artwork<RenderConfiguration, SetupResult>> = buildLookupFromImports(
   generative,
   math,
   processing
 );
 
-export function getArtworkRenderer<TConfig extends RenderConfiguration, TSetup extends Record<string, unknown>>(
+export function getArtworkRenderer<TConfig extends RenderConfiguration, TSetup extends SetupResult>(
   path: string[]
 ): Artwork<TConfig, TSetup> | undefined {
   const knownPath = path.join("/");
@@ -29,7 +29,7 @@ export function getArtworkRenderer<TConfig extends RenderConfiguration, TSetup e
   return loadLocalArtwork<TConfig, TSetup>(path);
 }
 
-function loadLocalArtwork<TConfig extends RenderConfiguration, TSetup extends Record<string, unknown>>(
+function loadLocalArtwork<TConfig extends RenderConfiguration, TSetup extends SetupResult>(
   path: string[]
 ): Artwork<TConfig, TSetup> | undefined {
   if (process.env.NODE_ENV === "production") {
@@ -66,7 +66,9 @@ export function getGalleryIndex() {
   return Object.keys(index);
 }
 
-function buildLookupFromImports(...imports: unknown[]) {
+type Export = Record<string, { default?: unknown }>;
+
+function buildLookupFromImports(...imports: Export[]) {
   return imports
     .map((i) => Object.values(i))
     .reduce((acc, exports) => {
@@ -74,12 +76,12 @@ function buildLookupFromImports(...imports: unknown[]) {
         return acc;
       }
 
-      for (const e of exports.map((e: unknown) => e.default).filter(Boolean)) {
+      for (const e of exports.map((e) => e.default).filter(Boolean)) {
         if (typeof e === "object" && e["path"] && typeof e["path"] === "string") {
-          acc[e["path"]] = e as Artwork<RenderConfiguration, Record<string, unknown>>;
+          acc[e["path"]] = e as Artwork<RenderConfiguration, SetupResult>;
         }
       }
 
       return acc;
-    }, {} as Record<string, Artwork<RenderConfiguration, Record<string, unknown>>>);
+    }, {} as Record<string, Artwork<RenderConfiguration, SetupResult>>);
 }
