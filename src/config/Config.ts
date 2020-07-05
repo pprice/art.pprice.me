@@ -105,16 +105,16 @@ export function getDefaultConfiguration<T extends RenderConfiguration>(
   source: T,
   initial?: Partial<RuntimeRenderConfiguration<T>>
 ): RuntimeRenderConfiguration<T> {
-  const res: any = {};
+  const res: Record<string, unknown> = {};
 
   for (const [key, propConfig] of Object.entries(source)) {
-    (res as any)[key] = initial?.[key] || defaultForPropType(propConfig);
+    res[key] = initial?.[key] || defaultForPropType(propConfig);
   }
 
   return res as RuntimeRenderConfiguration<T>;
 }
 
-function defaultForPropType(prop: RenderConfigurationProperty): any {
+function defaultForPropType(prop: RenderConfigurationProperty) {
   switch (prop.type) {
     case "boolean":
       return prop.default || false;

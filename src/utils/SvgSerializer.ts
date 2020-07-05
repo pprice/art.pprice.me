@@ -35,7 +35,7 @@ export function svgSerializer(chart: HTMLElement, pageCanvas: CanvasSize) {
       // NOTE: React doesn't support namespaced attributes on svgs, we workaround this by using
       // namespace-attrib properties that are decoded and set correctly during serialization
       if (inkscapeAttributes.has(attr.name)) {
-        const [ns, name] = attr.name.split("-");
+        const [, name] = attr.name.split("-");
 
         // We can't modify inplace or enumeration stops, save modifications in array and process after
         // we are done with all attributes

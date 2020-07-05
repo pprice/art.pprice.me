@@ -4,9 +4,8 @@ import React from "react";
 import { D3RenderFrame } from "@/renderers";
 import { JSDOM } from "jsdom";
 import ReactDOMServer from "react-dom/server";
-import { NextApiRequest } from "next";
 
-export async function renderArtworkToSvg<TConfig extends RenderConfiguration, TSetup extends object>(
+export async function renderArtworkToSvg<TConfig extends RenderConfiguration, TSetup extends Record<string, unknown>>(
   artwork: Artwork<TConfig, TSetup>,
   baseUrl?: string
 ): Promise<string | undefined> {
@@ -21,7 +20,9 @@ export async function renderArtworkToSvg<TConfig extends RenderConfiguration, TS
     const context = baseUrl ? { baseUrl } : undefined;
     const setupFunc = artwork.setup(config, undefined, context);
     if (setupFunc) {
-      setupContext = await setupFunc(() => {});
+      setupContext = await setupFunc(() => {
+        /* TODO */
+      });
     }
   }
 

@@ -125,7 +125,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
       h: ctx.setup.hue[i],
     }));
 
-    const { w, h } = sizeOf(segments[0]);
+    const { w } = sizeOf(segments[0]);
 
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 

@@ -13,12 +13,12 @@ export type BaseRenderFrameProps = {
   containerStroke?: string;
   containerStrokeWidth?: number;
   margin?: number | number[]; // LTRB
-  config?: any;
-  setupResult?: any;
+  config?: Record<string, unknown>;
+  setupResult?: Record<string, unknown>;
   seed: string;
   attribution?: string;
   ref?: React.MutableRefObject<RenderRef>;
   paused?: boolean;
 };
 
-export type RenderFrameProps<TDatum = any> = D3RenderFrameProps<TDatum>;
+export type RenderFrameProps<TDatum = unknown> = D3RenderFrameProps<TDatum>;

@@ -1,11 +1,7 @@
-import * as d3 from "d3";
 import flatten from "@flatten-js/core";
 
 import { D3Artwork } from "../types/d3";
 import { makeRenderConfig } from "@/config";
-import { MicronPigma } from "@/const";
-import { toRadians } from "@/geom/math";
-import { identityMatrix } from "@/geom";
 import { hatch, crossHatch } from "@/geom/hatch";
 
 const config = makeRenderConfig({

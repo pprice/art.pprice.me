@@ -15,13 +15,13 @@ type InitialProps = {
 
 type SetupProducer<TSetupResult> = (statusCallback: (message: string) => void) => Promise<TSetupResult>;
 
-export type SetupFunc<TConfig, TSetupResult extends object> = (
+export type SetupFunc<TConfig, TSetupResult extends Record<string, unknown>> = (
   config: TConfig,
   prior: TSetupResult | undefined,
   context?: { baseUrl: string }
 ) => SetupProducer<TSetupResult> | undefined;
 
-type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends object = undefined> = {
+type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends Record<string, unknown> = undefined> = {
   initialProps?: Partial<InitialProps>;
   config: TConfig;
   presents?: { [key: string]: RuntimeRenderConfiguration<TConfig> }[];
@@ -34,10 +34,10 @@ type BaseArtwork<TConfig extends RenderConfiguration, TSetupResult extends objec
 
 export type D3Artwork<
   TConfig extends RenderConfiguration,
-  TSetupResult extends object = undefined,
+  TSetupResult extends Record<string, unknown> = undefined,
   TBaseType extends BaseType = BaseType,
-  TDatum = any
-> = BaseArtwork<TConfig, TSetupResult> & {
+  TDatum = unknown
+> = BaseArtwork<TConfig, Record<string, unknown>> & {
   type: "d3";
   render: (
     selection: D3Selection<TBaseType, TDatum>,
@@ -45,7 +45,7 @@ export type D3Artwork<
   ) => void;
 };
 
-export type Artwork<TConfig extends RenderConfiguration, TSetupResult extends object> = D3Artwork<
+export type Artwork<TConfig extends RenderConfiguration, TSetupResult extends Record<string, unknown>> = D3Artwork<
   TConfig,
   TSetupResult
 >;

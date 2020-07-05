@@ -26,7 +26,7 @@ export type HersheyOptions = {
 };
 
 export class Hershey {
-  private parsedFontPromise: Promise<any>;
+  private parsedFontPromise: Promise<unknown>;
 
   constructor(options: HersheyOptions) {
     let svgContent: string = options.svg;
@@ -45,11 +45,11 @@ export class Hershey {
     this.parsedFontPromise = this.parse(svgContent);
   }
 
-  public async drawText(text: string): Promise<string> {
+  public async drawText(): Promise<string> {
     return "";
   }
 
-  private async parse(svgContent: string): Promise<any> {
+  private async parse(svgContent: string): Promise<unknown> {
     const parsed = new xml.Parser().parseStringPromise(svgContent);
     return parsed;
   }

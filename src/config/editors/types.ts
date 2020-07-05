@@ -5,7 +5,7 @@ export type PropertyEditorProps<TProperty extends RenderConfigurationProperty = 
   propertyKey: string;
   property: TProperty;
   initial?: PropertyInfer<TProperty>;
-  onUpdated: (key: string, oldValue: any, newValue: any) => void;
+  onUpdated: (key: string, oldValue: PropertyInfer<TProperty> | undefined, newValue: PropertyInfer<TProperty>) => void;
 };
 
 export type PropertyEditorComponent<TProperty extends RenderConfigurationProperty> = FunctionComponent<

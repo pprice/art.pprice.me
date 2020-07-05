@@ -1,4 +1,4 @@
-import { Point, Box, Line, Segment } from "./types";
+import { Point, Segment } from "./types";
 import flatten from "@flatten-js/core";
 
 export function translatePoints(points: Point[], offset: Point): Point[] {

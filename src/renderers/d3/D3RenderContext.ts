@@ -7,7 +7,7 @@ import { Point } from "@/geom";
 
 export type D3Selection<
   GElement extends d3.BaseType = d3.BaseType,
-  TDatum = any,
+  TDatum = unknown,
   PElement extends d3.BaseType = d3.BaseType
 > = d3.Selection<GElement, TDatum, PElement, TDatum>;
 

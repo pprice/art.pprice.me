@@ -21,7 +21,7 @@ const config = makeRenderConfig({
   },
 });
 
-const TestPrint: D3Artwork<typeof config, object> = {
+const TestPrint: D3Artwork<typeof config> = {
   type: "d3",
   config,
   setup: (config, prior) => {
