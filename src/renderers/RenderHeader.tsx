@@ -38,7 +38,7 @@ export const RenderHeader: FunctionComponent<RenderHeaderProps> = ({
           <Switch
             size="small"
             value={toggleValue}
-            onChange={(e, checked) => {
+            onChange={(_e, checked) => {
               setToggleValue(checked);
               onToggleSettings?.(checked);
             }}
