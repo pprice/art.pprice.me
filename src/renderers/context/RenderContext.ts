@@ -19,9 +19,9 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     this.random = new RandomContext(seed, canvas);
   }
 
-  public range(start: number, end: number, by: number = 1): number[] {
+  public range(start: number, end: number, by = 1): number[] {
     let current = start;
-    let res: number[] = [];
+    const res: number[] = [];
     while (current <= end) {
       res.push(current);
       current += by;
@@ -46,15 +46,15 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     return flatten.point(this.width / 2, this.height / 2);
   }
 
-  clampVertical(y: number, padding: number = 0): number {
+  clampVertical(y: number, padding = 0): number {
     return Math.max(padding, Math.min(y, this.height - padding));
   }
 
-  clampHorizontal(x: number, padding: number = 0): number {
+  clampHorizontal(x: number, padding = 0): number {
     return Math.max(padding, Math.min(x, this.width - padding));
   }
 
-  clamp(p: Point | [number, number], padding: number = 0): Point {
+  clamp(p: Point | [number, number], padding = 0): Point {
     if (Array.isArray(p)) {
       return point(this.clampHorizontal(p[0], padding), this.clampHorizontal(p[1], padding));
     }
@@ -96,8 +96,8 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
   }
 
   centerRect(w: number | Size, h?: number): Point {
-    let w2: number = -1;
-    let h2: number = -1;
+    let w2 = -1;
+    let h2 = -1;
     if (typeof w === "object") {
       w2 = w.w;
       h2 = w.h;
@@ -185,7 +185,7 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     const segmentSize = dimensionLength / count;
     const adjust = this.getSegmentAdjustment(style, segmentSize);
 
-    let res = [];
+    const res = [];
     for (let i = 0; i < count; i++) {
       res.push(segmentSize * i + adjust);
     }

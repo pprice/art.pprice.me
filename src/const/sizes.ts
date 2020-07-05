@@ -18,11 +18,11 @@ export function createPageSize(width: number, height: number): PaperSize {
   };
 }
 
-export function inchesToPixels(inches: number, dpi: number = 96) {
+export function inchesToPixels(inches: number, dpi = 96) {
   return Math.floor(inches * dpi);
 }
 
-export function millimetersToPixels(millimeters: number, dpi: number = 96) {
+export function millimetersToPixels(millimeters: number, dpi = 96) {
   return inchesToPixels(millimeters / 25.4, dpi);
 }
 

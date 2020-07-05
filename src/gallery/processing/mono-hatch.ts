@@ -82,7 +82,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    var lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
+    const lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
 
     const boxFit = ctx.centerFitRect(ctx.setup.canvas.size);
     const boxOffset = pointFromBox(boxFit, "top-left");
@@ -104,7 +104,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
 
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 
-    for (let p of zip) {
+    for (const p of zip) {
       if (p.value == undefined || p.value > ctx.config.high_threshold) {
         continue;
       }

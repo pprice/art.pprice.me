@@ -46,7 +46,7 @@ const Torus: D3Artwork<typeof config> = {
 
     const stepSize = 360 / ctx.config.steps;
 
-    let groups = ctx.range(1, ctx.config.groups).map((i) => ({ layer: ctx.layer(selection, `group-${i}`) }));
+    const groups = ctx.range(1, ctx.config.groups).map((i) => ({ layer: ctx.layer(selection, `group-${i}`) }));
 
     for (let i = 0; i < Math.ceil(180 - stepSize); i += stepSize) {
       const groupId = Math.floor(i) % ctx.config.groups;

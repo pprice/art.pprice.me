@@ -8,8 +8,8 @@ const MIN_INTERVAL = 1;
 export function crossHatch(
   shape: flatten.Circle | flatten.Polygon | flatten.Box,
   interval: number,
-  angle: number = 45,
-  alternate: boolean = true
+  angle = 45,
+  alternate = true
 ) {
   const firstPass = hatch(shape, interval, angle, alternate);
   const secondPass = hatch(shape, interval, Math.max(90 - angle, angle + 90), alternate);
@@ -20,8 +20,8 @@ export function crossHatch(
 export function hatch(
   shape: flatten.Circle | flatten.Polygon | flatten.Box,
   interval: number,
-  angle: number = 45,
-  alternate: boolean = true
+  angle = 45,
+  alternate = true
 ): Segment[] {
   if (interval == undefined || Number.isNaN(interval)) {
     throw new Error();

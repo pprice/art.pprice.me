@@ -195,15 +195,15 @@ export class CanvasContext {
       };
     }
 
-    let arr = new Uint32Array(w * h); // One 32bit int per pixel
+    const arr = new Uint32Array(w * h); // One 32bit int per pixel
     let i = 0;
     const originalWidth = this.imageDataCache.width;
     const originalHeight = this.imageDataCache.height;
     const data = this.imageDataCache.data;
 
-    for (var row = y; row < h + y; row++) {
-      for (var col = x; col < w + x; col++) {
-        var offset = row * originalWidth + col;
+    for (let row = y; row < h + y; row++) {
+      for (let col = x; col < w + x; col++) {
+        const offset = row * originalWidth + col;
         if (col < 0 || col >= originalWidth || row < 0 || row >= originalHeight) {
           arr[i++] = 0;
         } else {

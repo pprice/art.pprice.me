@@ -30,7 +30,7 @@ const TestPrint: D3Artwork<typeof config> = {
   config,
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
-    var lineFunction = ctx.getPointLineRenderer("linear");
+    const lineFunction = ctx.getPointLineRenderer("linear");
     const d1 = ctx.layer(selection, "d1");
     const d2 = ctx.layer(selection, "d2");
 
@@ -43,11 +43,11 @@ const TestPrint: D3Artwork<typeof config> = {
     const hatch1 = hatch(container1, 10, 145);
     const hatch2 = crossHatch(container2, 10, 12);
 
-    for (let h of hatch1) {
+    for (const h of hatch1) {
       ctx.plotLine(d2, "path", "blue").attr("d", lineFunction([h.ps, h.pe]));
     }
 
-    for (let hh of hatch2) {
+    for (const hh of hatch2) {
       ctx.plotLine(d1, "path", "red").attr("d", lineFunction(hh.map((l) => [l.pe, l.ps]).flat()));
     }
 

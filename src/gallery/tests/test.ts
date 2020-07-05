@@ -26,11 +26,11 @@ const TestPrint: D3Artwork<typeof config> = {
   config,
   render: (selection, ctx) => {
     // selection.append("circle").attr("cx", 100).attr("cy", 40).attr("r", 50);
-    var lineFunction = d3.line<number[]>().curve(d3.curveBundle);
+    const lineFunction = d3.line<number[]>().curve(d3.curveBundle);
     const vSegment = ctx.segmentDimension(ctx.config.num_v_lines, "vertical");
     const hSegment = ctx.segmentDimension(ctx.config.num_h_lines, "horizontal");
 
-    for (let segment of vSegment) {
+    for (const segment of vSegment) {
       const lineData: number[][] = [
         [0, segment],
         [ctx.width, segment],
@@ -44,7 +44,7 @@ const TestPrint: D3Artwork<typeof config> = {
         .attr("fill", "none");
     }
 
-    for (let segment of hSegment) {
+    for (const segment of hSegment) {
       const lineData: number[][] = [
         [segment, 0],
         [segment, ctx.height],

@@ -12,7 +12,7 @@ export type D3Selection<
 > = d3.Selection<GElement, TDatum, PElement, TDatum>;
 
 export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfig, TSetupConfig> {
-  private layerId: number = 0;
+  private layerId = 0;
 
   constructor(
     pageCanvas: CanvasSize,
@@ -60,18 +60,13 @@ export class D3RenderContext<TConfig, TSetupConfig> extends RenderContext<TConfi
 
   public applyPlotLineAttr<TSelection extends d3.BaseType>(
     selection: D3Selection<TSelection>,
-    pen: string = "black",
-    width: number = 0.75
+    pen = "black",
+    width = 0.75
   ): D3Selection<TSelection> {
     return selection.attr("stroke", pen).attr("stroke-width", `${width}px`).attr("fill", "none");
   }
 
-  public plotLine<K extends keyof SVGElementTagNameMap>(
-    selection: D3Selection,
-    shape: K,
-    pen: string = "black",
-    width: number = 0.75
-  ) {
+  public plotLine<K extends keyof SVGElementTagNameMap>(selection: D3Selection, shape: K, pen = "black", width = 0.75) {
     return this.applyPlotLineAttr(selection.append(shape), pen, width);
   }
 }

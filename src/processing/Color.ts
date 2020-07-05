@@ -26,7 +26,7 @@ export function rgb2hsl(c: RGB | RGBA): HSL {
   if (max == min) {
     hsl[0] = hsl[1] = 0; // achromatic
   } else {
-    var d = max - min;
+    const d = max - min;
     hsl[1] = hsl[2] > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
       case r:

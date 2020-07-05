@@ -99,7 +99,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     };
   },
   render: (selection, ctx) => {
-    var lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
+    const lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
     const layers = HueRanges.map((r) => ({ ...r, layer: ctx.layer(selection, r.name) }));
 
     function pickLayerForHue(h: number): typeof layers[0] {
@@ -129,7 +129,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
 
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 
-    for (let p of zip) {
+    for (const p of zip) {
       if (Number.isNaN(p.l) || p.l == undefined || p.l > ctx.config.high_threshold) {
         continue;
       }

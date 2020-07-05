@@ -67,7 +67,7 @@ export type RuntimeRenderConfiguration<T extends RenderConfiguration> = {
 
 export function makeRenderConfig<T extends RenderConfiguration>(source: T): T {
   // Validate
-  for (let [key, propConfig] of Object.entries(source)) {
+  for (const [key, propConfig] of Object.entries(source)) {
     switch (propConfig.type) {
       case "number":
       case "number-range":
@@ -105,9 +105,9 @@ export function getDefaultConfiguration<T extends RenderConfiguration>(
   source: T,
   initial?: Partial<RuntimeRenderConfiguration<T>>
 ): RuntimeRenderConfiguration<T> {
-  let res: any = {};
+  const res: any = {};
 
-  for (let [key, propConfig] of Object.entries(source)) {
+  for (const [key, propConfig] of Object.entries(source)) {
     (res as any)[key] = initial?.[key] || defaultForPropType(propConfig);
   }
 

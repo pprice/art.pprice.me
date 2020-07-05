@@ -69,7 +69,7 @@ function buildLookupFromImports(...imports: any[]) {
         return acc;
       }
 
-      for (let e of exports.map((e: any) => e.default).filter(Boolean)) {
+      for (const e of exports.map((e: any) => e.default).filter(Boolean)) {
         if (typeof e === "object" && e["path"] && typeof e["path"] === "string") {
           acc[e["path"]] = e as Artwork<any, any>;
         }
