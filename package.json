@@ -7,7 +7,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "export": "next export"
+    "export": "next export",
+    "lint": "eslint */**/*.{ts,tsx,js} --quiet --fix"
   },
   "dependencies": {
     "@azure/cognitiveservices-imagesearch": "^3.0.0",
