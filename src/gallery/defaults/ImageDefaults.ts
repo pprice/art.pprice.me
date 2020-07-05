@@ -1,4 +1,4 @@
-import { ImageSource } from "@/config";
+import { ImageSource } from "src/lib/config";
 
 export const PLACES: ImageSource[] = [
   {

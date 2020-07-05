@@ -1,8 +1,7 @@
 import flatten from "@flatten-js/core";
-
-import { D3Artwork } from "../types/d3";
-import { makeRenderConfig } from "@/config";
-import { hatch, crossHatch } from "@/geom/hatch";
+import { makeRenderConfig } from "@/lib/config";
+import { D3Artwork } from "@/lib/artwork";
+import { hatch, crossHatch } from "@/lib/geom";
 
 const config = makeRenderConfig({
   num_h_lines: {

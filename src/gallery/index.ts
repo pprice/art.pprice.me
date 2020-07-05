@@ -1,5 +1,5 @@
-import { Artwork, SetupResult } from "./types/d3";
-import { RenderConfiguration } from "@/config";
+import { RenderConfiguration } from "@/lib/config";
+import { SetupResult, Artwork } from "@/lib/artwork";
 
 // To ensure these are included in a bundle a dynamic require can't be used for static site hosting
 // providers

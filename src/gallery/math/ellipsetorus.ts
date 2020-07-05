@@ -1,6 +1,6 @@
-import { D3Artwork } from "../types/d3";
-import { makeRenderConfig } from "@/config";
-import { MicronPigma } from "@/const";
+import { makeRenderConfig } from "@/lib/config";
+import { MicronPigma } from "@/lib/const";
+import { D3Artwork } from "@/lib/artwork";
 
 const config = makeRenderConfig({
   steps: {

@@ -1,8 +1,8 @@
-import { D3Artwork } from "../types/d3";
-import { makeRenderConfig } from "@/config";
-import { CanvasContext, createCanvas } from "src/processing/CanvasContext";
-import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
-import { sizeOf, pointFromBox } from "@/geom";
+import { makeRenderConfig } from "@/lib/config";
+import { CanvasContext, createCanvas } from "@/lib/processing";
+import { D3Artwork } from "@/lib/artwork";
+import { sizeOf, pointFromBox } from "@/lib/geom";
+import { DEFAULT_PREDEFINED_IMAGES } from "../defaults";
 
 const config = makeRenderConfig({
   image: {

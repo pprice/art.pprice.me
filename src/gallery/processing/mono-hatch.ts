@@ -1,13 +1,8 @@
-import { D3Artwork } from "../types/d3";
-import { makeRenderConfig } from "@/config";
-import { CanvasContext, createCanvas } from "src/processing/CanvasContext";
-import { DEFAULT_PREDEFINED_IMAGES } from "../defaults/ImageDefaults";
-import { hatch } from "src/geom/hatch";
-import { scale } from "src/geom/math";
-import { translateLines, segmentToPoints } from "@/geom/segment";
-import { ALL_CURVE_CHOICES } from "../defaults/CurveDefaults";
-import { Curve } from "@/geom/curve";
-import { pointFromBox, sizeOf } from "@/geom";
+import { makeRenderConfig } from "@/lib/config";
+import { DEFAULT_PREDEFINED_IMAGES, ALL_CURVE_CHOICES } from "../defaults";
+import { CanvasContext, createCanvas } from "@/lib/processing";
+import { D3Artwork } from "@/lib/artwork";
+import { Curve, pointFromBox, sizeOf, segmentToPoints, scale, translateLines, hatch } from "@/lib/geom";
 
 const config = makeRenderConfig({
   image: {

@@ -1,5 +1,5 @@
-import { Choice } from "@/config";
-import { CurveBase, CurveOpen, CurveClosed, Curve } from "@/geom/curve";
+import { CurveBase, CurveOpen, CurveClosed, Curve } from "@/lib/geom/Curves";
+import { Choice } from "@/lib/config";
 
 function makeChoice<T extends string>(value: T, label?: string): Choice<T> {
   return {

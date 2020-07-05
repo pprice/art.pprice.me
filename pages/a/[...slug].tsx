@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Error from "next/error";
 
 import { getArtworkRenderer } from "@/gallery";
-import { RenderContainer } from "@/renderers";
+import { RenderContainer } from "@/components/renderers";
 import Head from "next/head";
 
 // export const getStaticPaths: GetStaticPaths = async () => {

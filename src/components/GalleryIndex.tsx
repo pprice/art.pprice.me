@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useMemo } from "react";
-import { getGalleryIndex } from "@/gallery";
-import { List, ListItem, ListItemText, Box, makeStyles, createStyles, Theme } from "@material-ui/core";
 import Link from "next/link";
+import { List, ListItem, ListItemText, Box, makeStyles, createStyles, Theme } from "@material-ui/core";
+
+import { getGalleryIndex } from "@/gallery";
 
 type Item = { name: string; url: string };
 type Group = { name: string; children: Item[] };

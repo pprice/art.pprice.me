@@ -1,9 +1,9 @@
-import { Artwork } from "@/gallery/types/d3";
-import { RenderConfiguration, getDefaultConfiguration } from "@/config";
 import React from "react";
-import { D3RenderFrame } from "@/renderers";
 import { JSDOM } from "jsdom";
 import ReactDOMServer from "react-dom/server";
+import { getDefaultConfiguration, RenderConfiguration } from "@/lib/config";
+import { Artwork } from "@/lib/artwork";
+import { D3RenderFrame } from "@/components/renderers";
 
 export async function renderArtworkToSvg<TConfig extends RenderConfiguration, TSetup extends Record<string, unknown>>(
   artwork: Artwork<TConfig, TSetup>,

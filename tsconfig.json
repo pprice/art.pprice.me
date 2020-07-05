@@ -20,14 +20,10 @@
       "@/gallery/*": ["src/gallery/*"],
       "@/components": ["src/components"],
       "@/components/*": ["src/components/*"],
-      "@/config": ["src/config"],
-      "@/renderers": ["src/renderers"],
-      "@/const": ["src/const"],
-      "@/const/*": ["src/const/*"],
-      "@/utils": ["src/utils"],
-      "@/utils/*": ["src/utils/*"],
-      "@/geom": ["src/geom"],
-      "@/geom/*": ["src/geom/*"]
+      "@/lib": ["src/lib"],
+      "@/lib/*": ["src/lib/*"],
+      "@/hooks": ["src/hooks"],
+      "@/hooks/*": ["src/hooks/*"]
     }
   },
   "exclude": ["node_modules"],
