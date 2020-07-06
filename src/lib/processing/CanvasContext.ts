@@ -155,7 +155,7 @@ export class CanvasContext {
     cache = cache || new Map<number, number>();
 
     return (v: RGBA): number => {
-      const k = new Uint32Array(v.buffer)[0];
+      const k = v instanceof Uint8ClampedArray ? new Uint32Array(v.buffer)[0] : new Uint32Array(v)[0];
       let c = cache.get(k);
 
       if (c !== undefined) {
