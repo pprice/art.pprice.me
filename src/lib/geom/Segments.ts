@@ -25,3 +25,12 @@ export function flipAlternate(segments: Segment[]): Segment[] {
 export function segmentToPoints(segments: Segment[]): Point[] {
   return segments.map((s) => [s.start, s.end]).flat();
 }
+
+export type SegmentResult<T extends flatten.Shape> = {
+  shapes: T[];
+  orientation: "horizontal" | "vertical";
+  horizontalCount: number;
+  verticalCount: number;
+  horizontalSize: number;
+  verticalSize: number;
+};

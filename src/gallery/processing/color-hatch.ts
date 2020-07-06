@@ -1,5 +1,5 @@
 import { makeRenderConfig } from "@/lib/config";
-import { CanvasContext, createCanvas } from "@/lib/processing";
+import { CanvasContext, createCanvas, HUE_RANGE_RGB, channelFromHue } from "@/lib/processing";
 import { MicronPigma } from "@/lib/const";
 import { D3Artwork } from "@/lib/artwork";
 import { Curve, pointFromBox, sizeOf, scale, segmentToPoints, translateLines, hatch } from "@/lib/geom";
@@ -53,19 +53,6 @@ type SetupContext = {
   saturation: number[];
 };
 
-const HueRanges = [
-  {
-    name: "red",
-    ranges: [
-      [0 / 360, 50 / 360],
-      [280 / 360, 360 / 360],
-    ],
-    pen: MicronPigma.red,
-  },
-  { name: "green", ranges: [[50 / 360, 180 / 360]], pen: MicronPigma.green },
-  { name: "blue", ranges: [[180 / 360, 280 / 360]], pen: MicronPigma.blue },
-];
-
 const Dots: D3Artwork<typeof config, SetupContext> = {
   type: "d3",
   config,
@@ -95,10 +82,32 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
   },
   render: (selection, ctx) => {
     const lineFunction = ctx.getPointLineRenderer(ctx.config.curve as Curve);
-    const layers = HueRanges.map((r) => ({ ...r, layer: ctx.layer(selection, r.name) }));
+    const layers = [
+      {
+        pen: MicronPigma.red,
+        layer: ctx.layer(selection, "red"),
+      },
+      {
+        pen: MicronPigma.green,
+        layer: ctx.layer(selection, "green"),
+      },
+      {
+        pen: MicronPigma.blue,
+        layer: ctx.layer(selection, "blue"),
+      },
+    ];
 
     function pickLayerForHue(h: number): typeof layers[0] {
-      return layers.find((layer) => layer.ranges.findIndex((r) => h >= r[0] && h <= r[1]) != -1);
+      const channel = channelFromHue(h, HUE_RANGE_RGB);
+
+      switch (channel) {
+        case "red":
+          return layers[0];
+        case "green":
+          return layers[1];
+        case "blue":
+          return layers[2];
+      }
     }
 
     const o = { pen: "black", layer: ctx.layer(selection, "other") };
@@ -108,19 +117,19 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
     const boxSize = sizeOf(boxFit);
 
     const segments = ctx.segmentAspectRatio(ctx.config.detail, "box", Math.round(boxSize.w), Math.round(boxSize.h));
-    if (segments.length != ctx.setup.luminance.length) {
+    if (segments.shapes.length != ctx.setup.luminance.length) {
       console.error("Out of sync");
       return;
     }
 
-    const zip = segments.map((s, i) => ({
+    const zip = segments.shapes.map((s, i) => ({
       rect: s,
       l: ctx.setup.luminance[i],
       s: ctx.setup.saturation[i],
       h: ctx.setup.hue[i],
     }));
 
-    const { w } = sizeOf(segments[0]);
+    const { w } = sizeOf(segments.shapes[0]);
 
     const strength = [w / ctx.config.strength[0], w / ctx.config.strength[1]];
 

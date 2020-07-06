@@ -2,6 +2,7 @@ import { OffscreenImageDataCanvas, DomImageDataCanvas, ImageDataCanvas, ServerSi
 import { domLoadImageAsync } from "./Image";
 import { rgb2hsl, rgb2Luminance, RGBA } from "./Color";
 import { Box, size, box, Size } from "../geom";
+import { medianOf, averageOf, maximumOf, minimumOf } from "../utils/array";
 
 export async function createCanvas(source: string, ctx?: { baseUrl: string }): Promise<CanvasContext | undefined> {
   if (process.browser) {
@@ -28,19 +29,10 @@ type AggregateOperation = "avg" | "median" | "min" | "max";
 type AggregateValue = "luminance" | "hue" | "saturation" | "lightness";
 
 const Aggregators: { [K in AggregateOperation]: (values: number[]) => number } = {
-  avg: (values) => values.reduce((sum, i) => sum + i || 0, 0) / values.length,
-  min: (values) => Math.min(...values),
-  max: (values) => Math.max(...values),
-  median: (values) => {
-    if (values.length <= 1) {
-      return values[0];
-    }
-
-    const sorted = values.sort((a, b) => a - b);
-    const half = Math.floor(values.length / 2);
-
-    return sorted.length % 2 === 0 ? sorted[half] : (sorted[half - 1] + sorted[half]) / 2;
-  },
+  avg: (values) => averageOf(values, (i) => i),
+  min: (values) => minimumOf(values, (i) => i),
+  max: (values) => maximumOf(values, (i) => i),
+  median: (values) => medianOf(values, (i) => i),
 };
 
 type RGBAToFloat = (c: RGBA) => number;
@@ -130,8 +122,8 @@ export class CanvasContext {
 
     const res = [];
 
-    for (let x = 0; x < horizontal; x++) {
-      for (let y = 0; y < vertical; y++) {
+    for (let y = 0; y < vertical; y++) {
+      for (let x = 0; x < horizontal; x++) {
         res.push([x * hSegmentSize, y * vSegmentSize, hSegmentSize, vSegmentSize]);
       }
     }

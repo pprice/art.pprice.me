@@ -37,7 +37,7 @@ export function hatch(
   interval = Math.max(interval, MIN_INTERVAL);
 
   // Generate a circle that contains the entire shape which is larger than the longest dimension
-  const containingCircle = flatten.circle(shape.box.center, maxDimensionLength(shape.box) / (Math.PI / 2));
+  const containingCircle = flatten.circle(shape.box.center, maxDimensionLength(shape.box) / 1.2);
 
   const containingBounds = containingCircle.box;
 

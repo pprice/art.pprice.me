@@ -31,7 +31,7 @@ export function sizeOf(shape: flatten.Shape): Size {
     return sizeOf(shape.box);
   }
 
-  throw new Error("Not supported");
+  throw new Error(`Not supported ${typeof shape}`);
 }
 
 export function identityMatrix() {

@@ -71,7 +71,7 @@ const Dots: D3Artwork<typeof config, SetupContext> = {
 
     const d1 = ctx.layer(selection, "d1");
     const segments = ctx.segmentAspectRatio(ctx.config.detail, "center", Math.round(boxSize.w), Math.round(boxSize.h));
-    const zip = segments.map((s, i) => ({ xy: s, lum: ctx.setup.chunks[i] }));
+    const zip = segments.shapes.map((s, i) => ({ xy: s, lum: ctx.setup.chunks[i] }));
 
     ctx.applyPlotLineAttr(
       d1

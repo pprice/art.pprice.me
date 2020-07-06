@@ -1,7 +1,8 @@
 import flatten from "@flatten-js/core";
 
 import { RandomContext } from "./RandomContext";
-import { Point, Box, Size, size, box, point, CanvasSize, BlendMode } from "@/lib";
+import { CanvasSize, BlendMode } from "@/lib/const";
+import { Point, point, size, box, SegmentResult, Box, Size } from "@/lib/geom";
 
 type SegmentStyle = "start" | "end" | "center";
 
@@ -122,7 +123,7 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
     style: SegmentStyle = "center",
     w = this.width,
     h = this.height
-  ): Point[] {
+  ): SegmentResult<Point> {
     const hSegmentSize = w / horizontal;
     const vSegmentSize = h / vertical;
 
@@ -131,32 +132,46 @@ export class RenderContext<TConfig, TSetupResult = undefined> {
 
     const res: Point[] = [];
 
-    for (let x = 0; x < horizontal; x++) {
-      for (let y = 0; y < vertical; y++) {
+    for (let y = 0; y < vertical; y++) {
+      for (let x = 0; x < horizontal; x++) {
         res.push(point(x * hSegmentSize + hAdjust, y * vSegmentSize + yAdjust));
       }
     }
 
-    return res;
+    return {
+      shapes: res,
+      orientation: vertical > horizontal ? "vertical" : "horizontal",
+      horizontalSize: hSegmentSize,
+      verticalSize: vSegmentSize,
+      horizontalCount: horizontal,
+      verticalCount: vertical,
+    };
   }
 
-  segmentBox(horizontal: number, vertical: number, w = this.width, h = this.height): Box[] {
+  segmentBox(horizontal: number, vertical: number, w = this.width, h = this.height): SegmentResult<Box> {
     const hSegmentSize = w / horizontal;
     const vSegmentSize = h / vertical;
 
     const res: Box[] = [];
 
-    for (let x = 0; x < horizontal; x++) {
-      for (let y = 0; y < vertical; y++) {
+    for (let y = 0; y < vertical; y++) {
+      for (let x = 0; x < horizontal; x++) {
         res.push(box(x * hSegmentSize, y * vSegmentSize, hSegmentSize, vSegmentSize));
       }
     }
 
-    return res;
+    return {
+      shapes: res,
+      orientation: vertical > horizontal ? "vertical" : "horizontal",
+      horizontalSize: hSegmentSize,
+      verticalSize: vSegmentSize,
+      horizontalCount: horizontal,
+      verticalCount: vertical,
+    };
   }
 
-  segmentAspectRatio(count: number, style: "box", w?: number, h?: number): Box[];
-  segmentAspectRatio(count: number, style: SegmentStyle, w?: number, h?: number): Point[];
+  segmentAspectRatio(count: number, style: "box", w?: number, h?: number): SegmentResult<Box>;
+  segmentAspectRatio(count: number, style: SegmentStyle, w?: number, h?: number): SegmentResult<Point>;
   segmentAspectRatio(count: number, style: SegmentStyle | "box" = "center", w = this.width, h = this.height) {
     let vertical = 0;
     let horizontal = 0;

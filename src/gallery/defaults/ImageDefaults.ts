@@ -13,6 +13,10 @@ export const PLACES: ImageSource[] = [
     name: "Mt Rainier 2",
     source: "/images/mr2.jpg",
   },
+  {
+    name: "NZ Mountain",
+    source: "/images/nz_mt.jpg",
+  },
 ];
 
 export const PAINTINGS: ImageSource[] = [
