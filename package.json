@@ -31,7 +31,7 @@
     "react-dom": "^16.13.1",
     "seedrandom": "^3.0.5",
     "use-axios-client": "^2.0.0",
-    "use-debounce": "^3.4.2"
+    "use-debounce": "^3.4.3"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
