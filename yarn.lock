@@ -8330,10 +8330,10 @@ use-axios-client@^2.0.0:
   resolved "https://registry.yarnpkg.com/use-axios-client/-/use-axios-client-2.0.0.tgz#55f212c9d483cb25d365027788df77901f7b9b47"
   integrity sha512-LPj4e5Y37GHy/LL1kr8+WvdqHWbrxQEEdsZ+XA5uqsmCy7WYeGNaRXTMtlF4Lh25PI5nUsi3BBHupmFtm6lO3w==
 
-use-debounce@^3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-3.4.2.tgz#f4333cca59504244b916159600427bf977ec4c46"
-  integrity sha512-rW44wZaFPh3XiwUzGBA0JRuklpbfKO/szU/5CYD2Q/erLmCem63lJ650p3a+NJE6S+g0rulKtBOfa/3rw/GN+Q==
+use-debounce@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-3.4.3.tgz#5df9322322b3f1b1c263d46413f9facf6d8b56ab"
+  integrity sha512-nxy+opOxDccWfhMl36J5BSCTpvcj89iaQk2OZWLAtBJQj7ISCtx1gh+rFbdjGfMl6vtCZf6gke/kYvrkVfHMoA==
 
 use-subscription@1.4.1:
   version "1.4.1"
