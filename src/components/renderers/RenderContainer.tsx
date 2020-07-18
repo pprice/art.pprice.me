@@ -21,10 +21,12 @@ import AspectRatioIcon from "@material-ui/icons/AspectRatio";
 import RotateRightIcon from "@material-ui/icons/RotateRight";
 import ColorizeIcon from "@material-ui/icons/Colorize";
 
+import { Skeleton } from "@material-ui/lab";
+
 import { PartialBy } from "@/lib/utils";
 import { RenderConfiguration, RuntimeRenderConfiguration, getDefaultConfiguration } from "@/lib/config";
 import { SetupFunc, SetupResult } from "@/lib/artwork";
-import { BlendMode, BLEND_MODES, PaperSizes } from "@/lib/const";
+import { BlendMode, BLEND_MODES, PaperSizes, Sizes } from "@/lib/const";
 import { useDebounce } from "@/hooks/UseDebounce";
 
 import { RenderHeader } from "./RenderHeader";
@@ -60,6 +62,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   ...props
 }) => {
   const renderRef = useRef<RenderRef>();
+  const skeletonContainerRef = useRef<HTMLDivElement>();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
 
   const [configPanelOpen, setConfigPanelOpen] = useState(false);
@@ -130,15 +133,37 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
         .toUpperCase()
     );
 
+  const skeletonWidthHeight = useMemo(() => {
+    if (!skeletonContainerRef.current || !skeletonContainerRef.current.offsetWidth) {
+      return { width: "100%", height: 200 };
+    }
+
+    const ratio = Sizes[size]()[orientation].widthToHeightRatio;
+
+    console.dir(ratio);
+
+    return {
+      width: skeletonContainerRef.current.offsetWidth,
+      height: skeletonContainerRef.current.offsetWidth * ratio,
+    };
+  }, [size, orientation, skeletonContainerRef.current]);
+
   if (!activeSetupAndConfig || (onSetup && !activeSetupAndConfig?.setup)) {
     return (
-      <>
+      <div ref={skeletonContainerRef} style={{ width: "100%" }}>
         <RenderHeader title={title} description={description} hasSettings={false} />
         <Box display="flex" alignItems="center" flexDirection="column">
           {!setupError && (
             <>
-              <CircularProgress />
-              <Typography variant="h5">Setting up...</Typography>
+              <Box display="flex" alignItems="center" flexDirection="column" marginTop={6}>
+                <Typography variant="h2">Setting up...</Typography>
+                <Box marginTop={4}>
+                  <CircularProgress color="secondary" />
+                </Box>
+              </Box>
+              <Box display="flex" position="absolute">
+                <Skeleton variant="rect" width={skeletonWidthHeight.width} height={skeletonWidthHeight.height} />
+              </Box>
             </>
           )}
           {setupError && (
@@ -153,7 +178,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
             </>
           )}
         </Box>
-      </>
+      </div>
     );
   }
 

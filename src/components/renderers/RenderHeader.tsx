@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from "react";
+import React, { useState, FunctionComponent, useMemo } from "react";
 import { Typography, Box, Tooltip, Switch, IconButton, ClickAwayListener, Collapse } from "@material-ui/core";
 
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -6,7 +6,7 @@ import InfoIcon from "@material-ui/icons/InfoOutlined";
 
 type RenderHeaderProps = {
   title?: string;
-  description?: string;
+  description?: string | string[];
   hasSettings?: boolean;
   onToggleSettings?: (value: boolean) => void;
 };
@@ -19,6 +19,18 @@ export const RenderHeader: FunctionComponent<RenderHeaderProps> = ({
 }) => {
   const [toggleValue, setToggleValue] = useState(false);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
+
+  const descriptionLines = useMemo(() => {
+    if (!description) {
+      return [];
+    }
+
+    if (!Array.isArray(description)) {
+      description = [description];
+    }
+
+    return description.map((i) => i.split("\n")).flat();
+  }, [description]);
 
   return (
     <ClickAwayListener onClickAway={() => setDescriptionOpen(false)}>
@@ -49,10 +61,10 @@ export const RenderHeader: FunctionComponent<RenderHeaderProps> = ({
             </Box>
           )}
         </Box>
-        {description && (
+        {descriptionLines && descriptionLines.length > 0 && (
           <Collapse in={descriptionOpen}>
             <Box marginBottom={2}>
-              {description.split("\n").map((line, i) => (
+              {descriptionLines.map((line, i) => (
                 <Typography key={i} variant="subtitle1">
                   {line}
                 </Typography>
