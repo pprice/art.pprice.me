@@ -27,16 +27,15 @@ async function main() {
   const index = await client.get("/api/gallery");
 
   for (let slug of index.data) {
-    const svgOutput = path.resolve(PUBLIC_PATH, slug + ".svg");
+    // const svgOutput = path.resolve(PUBLIC_PATH, slug + ".svg");
     const pngOutput = path.resolve(PUBLIC_PATH, slug + ".png");
     const svgPayload = await client.get("/api/render/" + slug, { responseType: "text" });
 
-    const dirName = path.dirname(svgOutput);
+    const dirName = path.dirname(pngOutput);
     fs.mkdirSync(dirName, { recursive: true });
 
-    fs.writeFileSync(svgOutput, svgPayload.data, { encoding: "utf-8" });
-
-    console.log(`Wrote ${slug} to ${svgOutput} (${svgPayload.data.length})`);
+    // fs.writeFileSync(svgOutput, svgPayload.data, { encoding: "utf-8" });
+    // console.log(`Wrote ${slug} to ${svgOutput} (${svgPayload.data.length})`);
 
     await new Promise((resolve, reject) =>
       svgToImage(svgPayload.data, { width: 800, height: 600 }, (error, buffer) => {
