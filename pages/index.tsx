@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { getGalleryIndex } from "@/gallery";
 import { Box, GridList, GridListTile, useMediaQuery, Typography } from "@material-ui/core";
 import theme from "@/components/Theme";
+import Link from "next/link";
 
 function Home() {
   const items = useMemo(
@@ -20,7 +21,7 @@ function Home() {
         <GridList cellHeight={300} cols={isDesktop ? 3 : 1} spacing={10}>
           {items.map((p) => (
             <GridListTile key={p.name} color="white">
-              <a href={p.url}>
+              <Link href={p.url} prefetch={false}>
                 <Box
                   display="flex"
                   border={1}
@@ -28,13 +29,14 @@ function Home() {
                   height={290}
                   overflow="hidden"
                   style={{
+                    cursor: "pointer",
                     backgroundImage: `url(${p.img})`,
                     backgroundSize: "contain",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                   }}
                 ></Box>
-              </a>
+              </Link>
             </GridListTile>
           ))}
         </GridList>
