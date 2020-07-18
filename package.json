@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "lint": "eslint */**/*.{ts,tsx,js} --quiet --fix"
+    "lint": "eslint */**/*.{ts,tsx,js} --quiet --fix",
+    "previews": "node ./scripts/generate-previews.js"
   },
   "dependencies": {
     "@azure/cognitiveservices-imagesearch": "^3.0.0",
@@ -52,7 +53,9 @@
     "eslint-plugin-react": "^7.20.3",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
+    "node-svg2img": "^1.1.0",
     "prettier": "^2.0.5",
+    "tree-kill": "^1.2.2",
     "typescript": "^3.9.6"
   },
   "husky": {

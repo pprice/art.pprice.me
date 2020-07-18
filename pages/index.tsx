@@ -4,7 +4,13 @@ import { Box, GridList, GridListTile, useMediaQuery, Typography } from "@materia
 import theme from "@/components/Theme";
 
 function Home() {
-  const items = useMemo(() => getGalleryIndex().map((p) => ({ name: p, img: `/api/render/${p}`, url: `/a/${p}` })), []);
+  const items = useMemo(
+    () =>
+      getGalleryIndex()
+        .map((p) => ({ name: p, img: `/generated/${p}.png`, url: `/a/${p}` }))
+        .reverse(),
+    []
+  );
   const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
 
   return (
@@ -15,9 +21,19 @@ function Home() {
           {items.map((p) => (
             <GridListTile key={p.name} color="white">
               <a href={p.url}>
-                <Box display="flex" border={1} color="#EEEEEE" height={290} overflow="hidden">
-                  <img src={p.img} width="100%" />
-                </Box>
+                <Box
+                  display="flex"
+                  border={1}
+                  color="#EEEEEE"
+                  height={290}
+                  overflow="hidden"
+                  style={{
+                    backgroundImage: `url(${p.img})`,
+                    backgroundSize: "contain",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                ></Box>
               </a>
             </GridListTile>
           ))}
