@@ -132,25 +132,28 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
 
   if (!activeSetupAndConfig || (onSetup && !activeSetupAndConfig?.setup)) {
     return (
-      <Box display="flex" alignItems="center" flexDirection="column">
-        {!setupError && (
-          <>
-            <CircularProgress />
-            <Typography variant="h5">Setting up...</Typography>
-          </>
-        )}
-        {setupError && (
-          <>
-            <Typography variant="h5">Oops!</Typography>
-            <Typography>{setupError.message || setupError.message || "Something went wrong"}</Typography>
-            <Box marginTop={2}>
-              <Button variant="contained" onClick={() => window.location.reload()}>
-                Reload
-              </Button>
-            </Box>
-          </>
-        )}
-      </Box>
+      <>
+        <RenderHeader title={title} description={description} hasSettings={false} />
+        <Box display="flex" alignItems="center" flexDirection="column">
+          {!setupError && (
+            <>
+              <CircularProgress />
+              <Typography variant="h5">Setting up...</Typography>
+            </>
+          )}
+          {setupError && (
+            <>
+              <Typography variant="h5">Oops!</Typography>
+              <Typography>{setupError.message || setupError.message || "Something went wrong"}</Typography>
+              <Box marginTop={2}>
+                <Button variant="contained" onClick={() => window.location.reload()}>
+                  Reload
+                </Button>
+              </Box>
+            </>
+          )}
+        </Box>
+      </>
     );
   }
 
