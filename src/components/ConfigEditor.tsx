@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from "react";
-import { useDebouncedCallback } from "use-debounce";
 import { Box, Grid, Typography } from "@material-ui/core";
-
+import React, { FunctionComponent } from "react";
 import { RenderConfiguration, RuntimeRenderConfiguration } from "../lib/config/Config";
+
 import { PropertyEditor } from "./config-editors/PropertyEditor";
+import { useDebouncedCallback } from "use-debounce";
 
 type ConfigEditorProps = {
   config: RenderConfiguration;

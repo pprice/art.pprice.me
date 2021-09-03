@@ -1,8 +1,8 @@
-import React, { useState, FunctionComponent, useMemo } from "react";
-import { Typography, Box, Tooltip, Switch, IconButton, ClickAwayListener, Collapse } from "@material-ui/core";
+import { Box, ClickAwayListener, Collapse, IconButton, Switch, Typography } from "@material-ui/core";
+import React, { FunctionComponent, useMemo, useState } from "react";
 
-import SettingsIcon from "@material-ui/icons/Settings";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
+import SettingsIcon from "@material-ui/icons/Settings";
 
 type RenderHeaderProps = {
   title?: string;

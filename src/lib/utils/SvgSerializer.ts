@@ -21,7 +21,7 @@ export function svgSerializer(chart: HTMLElement, pageCanvas: CanvasSize) {
   svg.setAttribute("height", `${pageCanvas.millimeters[1]}mm`);
 
   const fragment = window.location.href + "#";
-  const walker = document.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT, null, false);
+  const walker = document.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT, null);
   while (walker.nextNode()) {
     const currentNode = walker.currentNode as HTMLElement;
 

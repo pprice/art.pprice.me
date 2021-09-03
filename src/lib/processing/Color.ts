@@ -43,7 +43,7 @@ export function rgb2hsl(c: RGB | RGBA): HSL {
     hsl[0] /= 6;
   }
 
-  return (hsl as unknown) as HSL;
+  return hsl as unknown as HSL;
 }
 
 export function hslToRgb([h, s, l]: HSL): [number, number, number] {

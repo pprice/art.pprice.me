@@ -1,25 +1,23 @@
-import React, { useState, useCallback, useRef } from "react";
 import {
   Box,
-  TextField,
-  Select,
-  MenuItem,
-  IconButton,
-  Popover,
   CircularProgress,
-  GridList,
-  GridListTile,
-  makeStyles,
+  IconButton,
+  ImageList,
+  ImageListItem,
+  MenuItem,
+  Popover,
+  Select,
+  TextField,
   createStyles,
+  makeStyles,
 } from "@material-ui/core";
+import React, { useCallback, useRef, useState } from "react";
 
+import { ImageProperty } from "@/lib/config";
+import { PropertyEditorComponent } from "./types";
 import SearchIcon from "@material-ui/icons/Search";
 import UploadIcon from "@material-ui/icons/Folder";
-
-import { PropertyEditorComponent } from "./types";
-
 import { useLazyAxios } from "use-axios-client";
-import { ImageProperty } from "@/lib/config";
 
 type ImageSearchResponse = {
   thumbnailUrl: string;
@@ -144,17 +142,17 @@ export const ImageEditor: PropertyEditorComponent<ImageProperty> = ({ propertyKe
             maxHeight={400}
           >
             {!loading && !emptySearch && data && data.length > 0 && (
-              <GridList>
+              <ImageList>
                 {data.map((result) => (
-                  <GridListTile
+                  <ImageListItem
                     key={result.imageUrl}
                     className={classes.searchItem}
                     onClick={() => setRemoteImageValue(result)}
                   >
                     <img src={result.thumbnailUrl} />
-                  </GridListTile>
+                  </ImageListItem>
                 ))}
-              </GridList>
+              </ImageList>
             )}
             {!loading && data && data.length === 0 && <>No results found</>}
             {!loading && error && <>{error.message || "Error"}</>}

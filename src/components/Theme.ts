@@ -1,12 +1,12 @@
-import { createMuiTheme } from "@material-ui/core/styles";
-
 import * as colors from "@material-ui/core/colors";
+
 import createBreakpoints from "@material-ui/core/styles/createBreakpoints";
+import { createTheme } from "@material-ui/core/styles";
 
 const breakpoints = createBreakpoints({});
 
 // Create a theme instance.
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     type: "light",
     primary: colors.pink,

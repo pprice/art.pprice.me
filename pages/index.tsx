@@ -1,8 +1,9 @@
+import { Box, ImageList, ImageListItem, Typography, useMediaQuery } from "@material-ui/core";
 import React, { useMemo } from "react";
-import { getGalleryIndex } from "@/gallery";
-import { Box, GridList, GridListTile, useMediaQuery, Typography } from "@material-ui/core";
-import theme from "@/components/Theme";
+
 import Link from "next/link";
+import { getGalleryIndex } from "@/gallery";
+import theme from "@/components/Theme";
 
 function Home() {
   const items = useMemo(
@@ -18,9 +19,9 @@ function Home() {
     <Box>
       <Typography variant="h2">Gallery</Typography>
       <Box marginTop={2}>
-        <GridList cellHeight={300} cols={isDesktop ? 3 : 1} spacing={10}>
+        <ImageList rowHeight={300} cols={isDesktop ? 3 : 1} gap={10}>
           {items.map((p) => (
-            <GridListTile key={p.name} color="white">
+            <ImageListItem key={p.name} color="white">
               <Link href={p.url} prefetch={false}>
                 <Box
                   display="flex"
@@ -37,9 +38,9 @@ function Home() {
                   }}
                 ></Box>
               </Link>
-            </GridListTile>
+            </ImageListItem>
           ))}
-        </GridList>
+        </ImageList>
       </Box>
     </Box>
   );

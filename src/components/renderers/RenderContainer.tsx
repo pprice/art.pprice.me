@@ -1,41 +1,36 @@
-import React, { FunctionComponent, useRef, useState, useMemo, useEffect } from "react";
-import FileSaver from "file-saver";
+import { BLEND_MODES, BlendMode, PaperSizes, Sizes } from "@/lib/const";
 import {
   Box,
   Button,
-  TextField,
-  IconButton,
-  Select,
-  MenuItem,
-  Zoom,
-  Tooltip,
-  useMediaQuery,
-  Typography,
-  Divider,
   CircularProgress,
+  Divider,
+  IconButton,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+  Typography,
+  Zoom,
+  useMediaQuery,
 } from "@material-ui/core";
+import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
+import { RenderConfiguration, RuntimeRenderConfiguration, getDefaultConfiguration } from "@/lib/config";
+import { RenderFrameProps, RenderRef } from "./props";
+import { SetupFunc, SetupResult } from "@/lib/artwork";
 
 import ArrowDownloadIcon from "@material-ui/icons/ArrowDownward";
-import RefreshIcon from "@material-ui/icons/Refresh";
 import AspectRatioIcon from "@material-ui/icons/AspectRatio";
-import RotateRightIcon from "@material-ui/icons/RotateRight";
 import ColorizeIcon from "@material-ui/icons/Colorize";
-
-import { Skeleton } from "@material-ui/lab";
-
-import { PartialBy } from "@/lib/utils";
-import { RenderConfiguration, RuntimeRenderConfiguration, getDefaultConfiguration } from "@/lib/config";
-import { SetupFunc, SetupResult } from "@/lib/artwork";
-import { BlendMode, BLEND_MODES, PaperSizes, Sizes } from "@/lib/const";
-import { useDebounce } from "@/hooks/UseDebounce";
-
-import { RenderHeader } from "./RenderHeader";
-import { RenderFrame } from "./RenderFrame";
 import { ConfigEditor } from "../ConfigEditor";
-
-import { RenderFrameProps, RenderRef } from "./props";
-
+import FileSaver from "file-saver";
+import { PartialBy } from "@/lib/utils";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import { RenderFrame } from "./RenderFrame";
+import { RenderHeader } from "./RenderHeader";
+import RotateRightIcon from "@material-ui/icons/RotateRight";
+import { Skeleton } from "@material-ui/lab";
 import theme from "../Theme";
+import { useDebounce } from "@/hooks/UseDebounce";
 
 type PartialRenderFrameProps = "seed" | "orientation" | "size" | "blendMode" | "margin";
 
@@ -80,6 +75,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const [activeSetupAndConfig, setActiveSetupAndConfig] = useState<
     { config: RuntimeRenderConfiguration; setup?: SetupResult } | undefined
   >(undefined);
+
   const [pendingConfig, setPendingConfig] = useState<RuntimeRenderConfiguration>(initialConfig);
   const [setupError, setSetupError] = useState<Error | undefined>(undefined);
 
@@ -121,10 +117,10 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
     return () => clearTimeout(handle);
   }, [onSetup, pendingConfig]);
 
-  const configPanelVisible = useMemo(() => activeSetupAndConfig != undefined && configPanelOpen, [
-    activeSetupAndConfig,
-    configPanelOpen,
-  ]);
+  const configPanelVisible = useMemo(
+    () => activeSetupAndConfig != undefined && configPanelOpen,
+    [activeSetupAndConfig, configPanelOpen]
+  );
 
   const generateSeed = () =>
     setSeed(
