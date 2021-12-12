@@ -12,7 +12,7 @@ type ConfigEditorProps = {
 };
 
 export const ConfigEditor: FunctionComponent<ConfigEditorProps> = ({ config, activeConfig, onConfigUpdated }) => {
-  const [handleUpdate] = useDebouncedCallback((key: string, _oldValue: unknown, newValue: unknown) => {
+  const handleUpdate = useDebouncedCallback((key: string, _oldValue: unknown, newValue: unknown) => {
     // console.log(`Update to ${key}: ${_oldValue}->${newValue}`);
 
     const updated = { ...activeConfig, [key]: newValue };

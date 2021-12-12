@@ -29,7 +29,7 @@ import { GalleryIndex } from "@/components/GalleryIndex";
 
 // Generated
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import classes from "*.module.css";
+// import classes from "*.module.css";
 
 type MyAppProps = AppProps;
 
