@@ -5,7 +5,7 @@ type Rounding = undefined | "floor" | "ceil" | "round";
 type Point = [number, number];
 
 export class RandomContext {
-  private random: sr.prng;
+  private random: sr.PRNG;
   constructor(seed: string, private size: CanvasSize) {
     this.random = sr(seed);
   }
