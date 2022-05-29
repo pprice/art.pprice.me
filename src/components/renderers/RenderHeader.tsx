@@ -17,7 +17,7 @@ export const RenderHeader: FunctionComponent<RenderHeaderProps> = ({
   hasSettings,
   onToggleSettings,
 }) => {
-  const [toggleValue, setToggleValue] = useState(false);
+  const [toggleValue, setToggleValue] = useState(true);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
 
   const descriptionLines = useMemo(() => {
@@ -52,7 +52,7 @@ export const RenderHeader: FunctionComponent<RenderHeaderProps> = ({
               <SettingsIcon />
               <Switch
                 size="small"
-                value={toggleValue}
+                checked={toggleValue}
                 onChange={(_e, checked) => {
                   setToggleValue(checked);
                   onToggleSettings?.(checked);

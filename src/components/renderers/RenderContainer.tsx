@@ -60,7 +60,7 @@ export const RenderContainer: FunctionComponent<RenderContainerProps> = ({
   const skeletonContainerRef = useRef<HTMLDivElement>();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
 
-  const [configPanelOpen, setConfigPanelOpen] = useState(false);
+  const [configPanelOpen, setConfigPanelOpen] = useState(true);
   const [seed, setSeed] = useState(initialSeed || "");
   const [orientation, setOrientation] = useState<"landscape" | "portrait">(
     () => initialOrientation || (isDesktop ? "landscape" : "portrait")
