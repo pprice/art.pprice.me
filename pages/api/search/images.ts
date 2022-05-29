@@ -5,9 +5,12 @@ import { ImagesSearchResponse } from "@azure/cognitiveservices-imagesearch/esm/m
 
 import * as jwt from "jsonwebtoken";
 
-const credentials = new CognitiveServicesCredentials(process.env.COGNITIVE_SEARCH_API_KEY || "<NONE>");
+const API_KEY = process.env.COGNITIVE_SEARCH_API_KEY;
+const ENDPOINT = process.env.COGNITIVE_SEARCH_ENDPOINT;
+
+const credentials = new CognitiveServicesCredentials(API_KEY || "<NONE>");
 const imageSearchClient = new ImageSearchClient(credentials, {
-  endpoint: `${process.env.COGNITIVE_SEARCH_ENDPOINT}/images/search`,
+  endpoint: `${ENDPOINT}/bing/v7.0/images/search`,
 });
 
 const EXPIRATION_SECONDS = 60 * 60 * 12;
