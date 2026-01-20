@@ -31,7 +31,7 @@
     "jimp": "^0.16.0",
     "jsdom": "^19.0.0",
     "jsonwebtoken": "^8.5.1",
-    "next": "^12.1.5",
+    "next": "^14.2.35",
     "probe-image-size": "^7.2.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
